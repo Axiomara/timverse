@@ -1,0 +1,236 @@
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import NewsCarousel from "../components/NewsCarousel"
+import { BLOG_POSTS } from "../data/posts"
+import { ArrowRight, ArrowLeft, Sparkles, MapPin, TrendingUp, Zap, Clock, ChevronRight } from "lucide-react"
+
+export default function Home() {
+  const [topicIndex, setTopicIndex] = useState(0)
+  const heroPost = BLOG_POSTS[0];
+
+  const categories = [
+    { cat: "Sepak Bola", color: "from-emerald-500/20", text: "text-emerald-500", desc: "Analisis pertandingan, bursa transfer pemain, dan update liga top dunia." },
+    { cat: "Gaming", color: "from-orange-500/20", text: "text-orange-500", desc: "Info terbaru mengenai gear, review game, dan turnamen e-sports." },
+    { cat: "Music", color: "from-blue-500/20", text: "text-blue-500", desc: "Tangga lagu, rilis album baru, dan wawancara eksklusif musisi." },
+    { cat: "Anime", color: "from-green-500/20", text: "text-green-500", desc: "Panduan musiman, rekomendasi tontonan, dan berita industri." },
+    { cat: "Movies", color: "from-red-500/20", text: "text-red-500", desc: "Review film box office, jadwal rilis, dan rumor casting aktor." },
+    { cat: "Tech", color: "from-purple-500/20", text: "text-purple-500", desc: "Gadget terbaru, inovasi AI, dan tren teknologi masa depan." }
+  ]
+
+  const timikaTrends = [
+    { id: 1, title: "Pembangunan Infrastruktur Digital di Mimika Capai Target Utama", tag: "Development", img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800" },
+    { id: 2, title: "Festival Budaya Amungme & Kamoro Tarik Ribuan Wisatawan", tag: "Culture", img: "https://images.unsplash.com/photo-1523050335102-c32c7503122b?auto=format&fit=crop&q=80&w=800" },
+    { id: 3, title: "Talenta Muda Sepak Bola Timika Siap Dilirik Klub Liga 1", tag: "Sports", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800" }
+  ]
+
+  const nextTopic = () => setTopicIndex((prev) => (prev + 1) % categories.length)
+  const prevTopic = () => setTopicIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1))
+
+  return (
+    <div className="relative min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-500 selection:bg-pink-500/30 overflow-x-hidden font-sans">
+      
+      <Navbar />
+
+    {/* --- SECTION 1: HERO (STATIC IMAGE) --- */}
+    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-32 pb-16 mb-16 md:mb-24">
+    <div className="absolute inset-0 z-0">
+        <img 
+        src="https://images7.alphacoders.com/107/1079478.jpg" 
+        className="w-full h-full object-cover opacity-50 dark:opacity-40" 
+        alt="Hero Background"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white dark:from-zinc-950/80 dark:via-transparent dark:to-zinc-950 z-10" />
+    </div>
+
+    <div className="relative z-20 max-w-7xl mx-auto px-6 text-center">
+        <div className="space-y-6 md:space-y-10 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+        <div className="inline-flex items-center gap-2 px-5 py-2 text-[10px] font-black tracking-[0.2em] uppercase border border-zinc-200 dark:border-zinc-800 text-pink-500 rounded-full mx-auto bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md">
+            <Sparkles size={12} />
+            <span>Trending Now</span>
+        </div>
+        
+        <h1 className="text-4xl md:text-[115px] font-black leading-[0.9] tracking-tighter uppercase drop-shadow-sm text-zinc-900 dark:text-white">
+            Marvel Cinematic <br className="hidden md:block" /> 
+            <span className="text-zinc-400 dark:text-zinc-500">Universe</span>
+            <span className="block bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent mt-2">Phase 7</span>
+        </h1>
+        
+        <p className="text-zinc-600 dark:text-zinc-300 text-sm md:text-xl max-w-2xl mx-auto leading-relaxed font-medium px-4">
+            Multiverse semakin meluas. Perjalanan sinematik yang akan mengubah segalanya. Temukan laporannya eksklusif di Popverse.
+        </p>
+        
+        <div className="flex justify-center pt-6">
+            <Link to={`/article/${heroPost.slug}`}>
+              <button className="group relative px-12 py-5 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-black font-bold text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center gap-3 shadow-2xl">
+                <span>Read Article</span>
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </div>
+        </div>
+    </div>
+    </section>
+
+      <main className="relative z-10 space-y-32 md:space-y-48">
+        
+        {/* --- SECTION 2: HOT FEED (CLEAN & FULLY RESPONSIVE) --- */}
+        <section className="max-w-7xl mx-auto px-6">
+          <div className="mb-12 border-b border-zinc-100 dark:border-zinc-900 pb-10 text-zinc-900 dark:text-white">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-indigo-500">
+                  <Zap size={18} fill="currentColor" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Latest Buzz</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic">Hot Feed</h2>
+              </div>
+              <button className="hidden sm:flex text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors items-center gap-2 group">
+                Full Feed <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            {/* Main Carousel Area */}
+            <div className="lg:col-span-8 rounded-[2.5rem] overflow-hidden">
+               <NewsCarousel />
+            </div>
+
+            {/* Sidebar List Area - Sekarang Vertikal Sepenuhnya di Mobile */}
+            <div className="lg:col-span-4 w-full">
+               <div className="space-y-8">
+                  <div className="flex items-center gap-2 text-zinc-400 px-1">
+                    <Clock size={16} className="text-pink-500" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Must Read</span>
+                  </div>
+                  
+                  {/* Diubah: flex-col selalu agar tertampil semua (vertikal) di mobile & desktop */}
+                  <div className="flex flex-col gap-0 divide-y divide-zinc-100 dark:divide-zinc-900">
+                    {[
+                        {id: "01", title: "GTA VI Trailer 2 dikabarkan bocor pekan depan?", cat: "Gaming"},
+                        {id: "02", title: "Konser World Tour 2026: Jakarta masuk daftar!", cat: "Music"},
+                        {id: "03", title: "Review Smartphone lipat terbaru tahun 2026", cat: "Tech"},
+                        {id: "04", title: "Bursa Transfer: Pemain bintang resmi pindah liga", cat: "Sports"},
+                    ].map((item) => (
+                        <div key={item.id} className="group py-7 sm:py-8 first:pt-0 cursor-pointer text-zinc-900 dark:text-white">
+                            <div className="flex gap-6 items-start">
+                                <span className="text-xl font-black text-zinc-200 dark:text-zinc-800 leading-none group-hover:text-indigo-500 transition-colors">{item.id}</span>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase text-indigo-500 tracking-widest leading-none">{item.cat}</p>
+                                    <h4 className="text-base md:text-lg font-bold leading-tight group-hover:underline decoration-2 underline-offset-4 decoration-indigo-500 transition-all">{item.title}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                  </div>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- SECTION 3: TIMIKA PULSE --- */}
+        <section className="max-w-7xl mx-auto px-6 text-zinc-900 dark:text-white">
+          <div className="mb-16 border-b border-zinc-100 dark:border-zinc-900 pb-10">
+            <div className="flex items-center gap-4 mb-3 text-pink-500">
+               <MapPin size={18} fill="currentColor" />
+               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Local Pulse</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-none">Timika Pulse</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+            {timikaTrends.map((trend) => (
+              <article key={trend.id} className="group cursor-pointer">
+                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm transition-all duration-500 group-hover:shadow-xl">
+                  <img 
+                    src={trend.img} 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                    alt={trend.title} 
+                  />
+                </div>
+                <div className="mt-8 space-y-3 px-1">
+                  <span className="text-[10px] font-black text-pink-500 uppercase tracking-widest">{trend.tag}</span>
+                  <h3 className="text-xl md:text-2xl font-black leading-tight group-hover:text-pink-500 transition-colors">{trend.title}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* --- SECTION 4: TOPICS --- */}
+        <section className="max-w-7xl mx-auto px-6 text-zinc-900 dark:text-white">
+          <header className="mb-16 border-b border-zinc-100 dark:border-zinc-900 pb-10">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-orange-500">
+                  <TrendingUp size={18} />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Explore</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-none">Topics</h2>
+              </div>
+              <div className="flex gap-4 md:hidden">
+                <button onClick={prevTopic} className="p-4 rounded-full border border-zinc-200 dark:border-zinc-800 active:scale-90 text-pink-500"><ArrowLeft size={20} /></button>
+                <button onClick={nextTopic} className="p-4 rounded-full border border-zinc-200 dark:border-zinc-800 active:scale-90 text-pink-500"><ArrowRight size={20} /></button>
+              </div>
+            </div>
+          </header>
+          
+          <div className="relative">
+            <div className="hidden md:grid md:grid-cols-3 gap-10">
+              {categories.map((item) => (
+                <TopicCard key={item.cat} item={item} />
+              ))}
+            </div>
+            <div className="md:hidden animate-in fade-in slide-in-from-right-5 duration-500" key={topicIndex}>
+              <TopicCard item={categories[topicIndex]} />
+            </div>
+          </div>
+        </section>
+
+        {/* --- SECTION 5: LATEST STORIES --- */}
+        <section className="max-w-7xl mx-auto px-6 pb-24 text-zinc-900 dark:text-white">
+          <div className="mb-20 border-b border-zinc-100 dark:border-zinc-900 pb-10">
+            <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase italic shrink-0">Latest Stories</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <article key={item} className="group cursor-pointer space-y-6">
+                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden bg-zinc-200 dark:bg-zinc-900 shadow-md transition-all duration-500 group-hover:shadow-2xl">
+                  <img src={`https://picsum.photos/seed/${item + 123}/800/500`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Story" />
+                </div>
+                <div className="px-2 space-y-4 text-zinc-900 dark:text-white">
+                  <div className="flex items-center gap-4">
+                    <span className="px-3 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">Pop Culture</span>
+                    <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest opacity-60">5 MIN READ</span>
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-black leading-tight group-hover:text-indigo-500 transition-colors">Future of Web Design 2026</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed line-clamp-2 text-sm font-medium">Bagaimana pendekatan minimalis mendominasi tren desain digital tahun ini.</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <footer className="py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">
+        <h2 className="text-2xl font-black tracking-[0.4em] uppercase opacity-10 mb-6 cursor-default">Popverse</h2>
+        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest opacity-60 text-zinc-900 dark:text-white">
+          &copy; 2026 Popverse Magazine &bull; All Rights Reserved.
+        </p>
+      </footer>
+    </div>
+  )
+}
+
+function TopicCard({ item }: { item: any }) {
+  return (
+    <div className="group relative p-12 rounded-[3rem] bg-zinc-50 dark:bg-zinc-900/40 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800 transition-all duration-500 h-full text-zinc-900 dark:text-white shadow-sm hover:shadow-md">
+      <h3 className="text-3xl font-black mb-6 tracking-tight uppercase italic">{item.cat}</h3>
+      <p className="text-zinc-500 dark:text-zinc-400 mb-10 text-base leading-relaxed">{item.desc}</p>
+      <div className={`flex items-center gap-3 font-black uppercase text-[10px] tracking-[0.2em] ${item.text} group-hover:gap-6 transition-all`}>
+        Explore <ArrowRight size={16} />
+      </div>
+    </div>
+  )
+}
