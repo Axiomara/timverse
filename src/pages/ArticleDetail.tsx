@@ -233,6 +233,22 @@ export default function ArticleDetail() {
         .prose blockquote p::before, .prose blockquote p::after { content: none; }
         .prose h3 { margin-top: 2.5rem; margin-bottom: 1.25rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.05em; font-size: 1.875rem; }
       `}</style>
+
+<style>{`
+
+  iframe {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    background-color: transparent !important;
+  }
+  
+ 
+    -webkit-overflow-scrolling: touch;
+  }
+`}</style>
+
     </div>
   )
 }
+
