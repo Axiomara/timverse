@@ -6,12 +6,13 @@ import NotFound from "./NotFound"
 import { 
   ArrowLeft, Bookmark, Share2, Clock, Calendar, 
   MessageCircle, Heart, Twitter, Facebook, 
-  Link as LinkIcon, Zap, Hash 
+  Link as LinkIcon, Zap, Hash, Check 
 } from "lucide-react"
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [completion, setCompletion] = useState(0)
+  const [copied, setCopied] = useState(false)
 
   // Cari data berita berdasarkan slug di URL
   const post = BLOG_POSTS.find((p) => p.slug === slug)
@@ -29,6 +30,42 @@ export default function ArticleDetail() {
     return () => window.removeEventListener("scroll", updateScrollCompletion)
   }, [])
 
+  // --- LOGIKA SHARE ---
+  const handleShare = async (platform: 'twitter' | 'facebook' | 'copy') => {
+    const url = window.location.href;
+    const title = post?.title || "Check this out!";
+
+    if (platform === 'copy') {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Gagal menyalin!", err);
+      }
+      return;
+    }
+
+    const shareLinks = {
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    };
+
+    window.open(shareLinks[platform], '_blank', 'noopener,noreferrer');
+  };
+
+  const handleNativeShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: post?.title,
+        text: post?.excerpt,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      handleShare('copy');
+    }
+  };
+
   // Jika berita tidak ditemukan, tampilkan 404
   if (!post) return <NotFound />
 
@@ -36,7 +73,7 @@ export default function ArticleDetail() {
     <div className="relative min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-500 overflow-x-hidden font-sans selection:bg-pink-500/30">
       
       {/* --- READING PROGRESS BAR --- */}
-      <div className="fixed top-0 left-0 w-full h-1 z-[60] pointer-events-none">
+      <div className="fixed top-0 left-0 w-full h-1 z-[120] pointer-events-none">
         <div 
           className="h-full bg-pink-500 transition-all duration-150 ease-out"
           style={{ width: `${completion}%` }}
@@ -81,7 +118,19 @@ export default function ArticleDetail() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <button className="p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90 group"><Share2 size={18} /></button>
+              {/* DESKTOP SHARE WITH TOOLTIP */}
+              <div className="relative group/share">
+                <button 
+                  onClick={() => handleShare('copy')}
+                  className="p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90"
+                >
+                  {copied ? <Check size={18} className="text-green-500" /> : <Share2 size={18} />}
+                </button>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 flex gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover/share:opacity-100 group-hover/share:translate-y-0 group-hover/share:pointer-events-auto transition-all">
+                   <button onClick={() => handleShare('twitter')} className="p-2 hover:text-blue-400 transition-colors"><Twitter size={16}/></button>
+                   <button onClick={() => handleShare('facebook')} className="p-2 hover:text-blue-600 transition-colors"><Facebook size={16}/></button>
+                </div>
+              </div>
               <button className="p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90 group"><Bookmark size={18} /></button>
             </div>
           </div>
@@ -99,7 +148,6 @@ export default function ArticleDetail() {
       {/* --- CONTENT & SIDEBAR --- */}
       <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 pb-32">
         
-        {/* LEFT: Article Body */}
         <article className="lg:col-span-8">
           <div className="prose prose-zinc dark:prose-invert prose-lg max-w-none prose-headings:italic prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tighter prose-blockquote:border-pink-500">
             
@@ -134,13 +182,10 @@ export default function ArticleDetail() {
             </div>
           )}
 
-          {/* --- TAGS SECTION (DENGAN JARAK LEGA) --- */}
           <div className="mt-16 pt-8 border-t border-zinc-100 dark:border-zinc-900">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-6 flex items-center gap-2">
               <Hash size={12} /> Related Topics
             </h4>
-            
-            {/* Perbaikan: Menambahkan gap-y-4 untuk jarak vertikal yang lega */}
             <div className="flex flex-wrap gap-x-3 gap-y-4 md:gap-x-4 md:gap-y-5"> 
               {post.tags.map((tag) => (
                 <Link to={`/tag/${tag.toLowerCase()}`} key={tag}>
@@ -152,7 +197,6 @@ export default function ArticleDetail() {
             </div>
           </div>
 
-          {/* DESKTOP SOCIAL (Bottom) */}
           <div className="hidden md:flex mt-16 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex-col gap-12 text-zinc-900 dark:text-white">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
@@ -160,15 +204,14 @@ export default function ArticleDetail() {
                    <button className="flex items-center gap-2 font-bold text-sm hover:text-indigo-500 transition-colors"><MessageCircle size={20} /> 84</button>
                 </div>
                 <div className="flex gap-4">
-                   <Twitter size={18} className="cursor-pointer hover:text-blue-400 transition-colors" />
-                   <Facebook size={18} className="cursor-pointer hover:text-blue-600 transition-colors" />
-                   <LinkIcon size={18} className="cursor-pointer hover:text-pink-500 transition-colors" />
+                   <Twitter onClick={() => handleShare('twitter')} size={18} className="cursor-pointer hover:text-blue-400 transition-colors" />
+                   <Facebook onClick={() => handleShare('facebook')} size={18} className="cursor-pointer hover:text-blue-600 transition-colors" />
+                   <LinkIcon onClick={() => handleShare('copy')} size={18} className={`cursor-pointer transition-colors ${copied ? 'text-green-500' : 'hover:text-pink-500'}`} />
                 </div>
              </div>
           </div>
         </article>
 
-        {/* RIGHT: Sidebar */}
         <aside className="lg:col-span-4 space-y-16">
           <div className="sticky top-32 space-y-16">
             <div className="space-y-10">
@@ -203,24 +246,22 @@ export default function ArticleDetail() {
         </aside>
       </main>
 
-      {/* --- MOBILE FLOATING ACTION BAR (MELAYANG) --- */}
+      {/* --- MOBILE FLOATING ACTION BAR --- */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
         <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-6 py-4 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-          <button className="flex items-center gap-2 group">
+          <button className="flex items-center gap-2 group active:scale-95 transition-transform">
             <Heart size={20} className="text-zinc-400 group-active:text-pink-500 transition-colors" />
             <span className="text-[10px] font-black uppercase">1.2k</span>
           </button>
           <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button className="flex items-center gap-2">
+          <button className="flex items-center gap-2 active:scale-95 transition-transform">
             <MessageCircle size={20} className="text-zinc-400" />
             <span className="text-[10px] font-black uppercase">84</span>
           </button>
           <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button>
-            <Bookmark size={20} className="text-zinc-400" />
-          </button>
+          <button className="active:scale-95 transition-transform"><Bookmark size={20} className="text-zinc-400" /></button>
           <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button>
+          <button onClick={handleNativeShare} className="active:scale-95 transition-transform">
             <Share2 size={20} className="text-zinc-400" />
           </button>
         </div>
@@ -251,17 +292,8 @@ export default function ArticleDetail() {
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .prose blockquote p::before, .prose blockquote p::after { content: none; }
         .prose h3 { margin-top: 2.5rem; margin-bottom: 1.25rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.05em; font-size: 1.875rem; }
-        
-        iframe {
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
-          will-change: transform;
-          background-color: transparent !important;
-        }
-
-        .prose {
-          -webkit-overflow-scrolling: touch;
-        }
+        iframe { transform: translateZ(0); -webkit-transform: translateZ(0); will-change: transform; background-color: transparent !important; }
+        .prose { -webkit-overflow-scrolling: touch; }
       `}</style>
     </div>
   )
