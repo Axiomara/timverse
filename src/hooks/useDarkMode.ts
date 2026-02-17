@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 export default function useDarkMode() {
-  // 1. Ambil initial state dari LocalStorage agar tidak reset saat pindah halaman
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme");
@@ -15,10 +14,10 @@ export default function useDarkMode() {
 
     if (dark) {
       root.classList.add("dark");
-      localStorage.setItem("theme", "dark"); // Simpan ke storage
+      localStorage.setItem("theme", "dark"); 
     } else {
       root.classList.remove("dark");
-      localStorage.setItem("theme", "light"); // Simpan ke storage
+      localStorage.setItem("theme", "light"); 
     }
   }, [dark]);
 

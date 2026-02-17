@@ -46,19 +46,34 @@ export const BLOG_POSTS: Post[] = [
     author: "Popverse Team",
     date: "Feb 18, 2026",
     readTime: "5 Min",
-    image: "https://picsum.photos/seed/gta6/1200/600",
+    image: "https://www.rockstargames.com/VI/_next/image?url=%2FVI%2F_next%2Fstatic%2Fmedia%2FJason_and_Lucia_02_With_Logos_landscape.93ab5523.jpg&w=1920&q=75",
     tags: ["GTA VI", "Rockstar Games", "Gaming", "Rumors", "Open World", "PS5"],
-    excerpt: "Rumor terbaru mengenai trailer kedua GTA VI mulai membanjiri internet. Apakah Rockstar siap memberikan kejutan besar?",
+    excerpt: "Internet kembali memanas. Setelah dua tahun dalam keheningan, Rockstar Games dikabarkan siap melepas trailer kedua yang akan mengubah standar industri sekali lagi.",
     content: `
-      <p>Antisipasi terhadap Grand Theft Auto VI telah mencapai titik didih. Setelah trailer pertama memecahkan rekor dunia di YouTube dua tahun lalu, para penggemar kini mencari petunjuk mengenai keberadaan trailer kedua.</p>
+      <p>Antisipasi terhadap <strong>Grand Theft Auto VI</strong> bukan lagi sekadar tren, melainkan sebuah fenomena budaya. Setelah trailer pertamanya memporak-porandakan rekor internet dua tahun silam, kini mata dunia tertuju pada satu pertanyaan besar: <i>Kapan Rockstar akan kembali membuka pintu menuju Leonida?</i></p>
       
-      <h3>Fokus pada Dinamika Jason dan Lucia</h3>
-      <p>Jika trailer pertama memberikan kita pandangan luas tentang Vice City, rumor mengatakan bahwa trailer kedua akan jauh lebih personal. Kita akan melihat lebih dalam dinamika hubungan "Bonnie & Clyde" antara Jason dan Lucia.</p>
+      <div class="my-12 p-8 bg-zinc-50 dark:bg-zinc-900/50 rounded-[2rem] border-l-4 border-orange-500 italic text-lg text-zinc-700 dark:text-zinc-300 shadow-sm">
+        "Ini bukan tentang kapan gamenya rilis, tapi tentang seberapa jauh Rockstar berani mendorong batasan realisme yang kita kenal selama ini."
+      </div>
+
+      <h3>Dinamika 'Bonnie & Clyde' yang Personal</h3>
+      <p>Berbeda dengan trailer pertama yang memamerkan kemegahan Vice City dalam balutan hiruk-pikuk media sosial, rumor kuat menyebutkan bahwa trailer kedua akan jauh lebih intim. Kita akan dibawa menyelami hubungan <strong>Jason dan Lucia</strong>.</p>
       
-      <h3>Teknologi Rendering yang Gila</h3>
-      <p>Bocoran teknis menunjukkan bahwa GTA VI akan memperkenalkan sistem cuaca dinamis yang sangat kompleks—dari badai tropis hingga kelembapan yang memengaruhi visual karakter secara real-time.</p>
+      <p>Rockstar dikabarkan menggunakan teknologi AI mutakhir untuk sistem interaksi karakter. Bukan lagi sekadar dialog statis, melainkan <i>chemistry</i> yang terasa organik—di mana setiap keputusan kecil yang kamu ambil akan memengaruhi bagaimana Jason dan Lucia saling memandang satu sama lain di tengah kekacauan kriminal mereka.</p>
+      
+      <div class="relative my-16 overflow-hidden rounded-[2.5rem] aspect-[16/9] shadow-2xl group">
+        <img src="https://media-rockstargames-com.akamaized.net/mfe6/prod/__common/img/7680072b25ed8a4869c991f86f78f860.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="GTA VI Landscape" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-white/70">Vice City: The Neon Paradise</p>
+        </div>
+      </div>
+
+      <h3>Revolusi Visual: Lebih dari Sekadar Piksel</h3>
+      <p>Bocoran teknis terbaru mengungkapkan bahwa GTA VI akan memperkenalkan sistem <i>Dynamic Weather 2.0</i>. Bayangkan sebuah badai tropis yang tidak hanya terlihat indah secara visual, tetapi juga memengaruhi fisik karakter secara real-time—mulai dari pakaian yang menempel karena kelembapan hingga genangan air yang menguap sesuai suhu lingkungan.</p>
+      
+      <p>Dengan target rilis musim gugur 2026 yang semakin nyata, trailer kedua ini diprediksi akan menjadi penentu standar baru bagi industri gaming. Rockstar tidak hanya sedang membuat game; mereka sedang membangun dunia yang hidup.</p>
     `
-  },
+},
   {
     slug: "the-future-of-ai-music",
     category: "Music",
@@ -139,5 +154,44 @@ export const BLOG_POSTS: Post[] = [
     <h3>Prediksi: Trailer Baru Akan Hadir Musim Panas Ini</h3>
     <p>Strategi Marvel menunjukkan bahwa kampanye <i>Doomsday</i> kemungkinan besar baru akan dimulai secara serius pada musim panas tahun ini (sekitar pertengahan tahun 2026).</p>
   `
-}
+},
+{
+  slug: "gta-vi-manual-development-no-ai",
+  category: "Gaming",
+  title: "GTA VI Tanpa AI Generatif:",
+  titleAccent: "Membangun Dunia dengan Tangan",
+  author: "Yuslianson",
+  date: "Feb 16, 2026",
+  readTime: "6 Min",
+  image: "https://cdn1-production-images-kly.akamaized.net/OV_dSiC36o-EBPWcv0oeFy2IyU4=/1280x720/smart/filters:quality(75):strip_icc()/kly-media-production/medias/5471435/original/068830500_1768286938-GTA_6__Dok._Rockstargames_.jpg",
+  tags: ["GTA VI", "Rockstar Games", "Take-Two", "Strauss Zelnick", "AI", "Gaming Industry"],
+  excerpt: "CEO Take-Two, Strauss Zelnick, menegaskan bahwa Rockstar Games membangun setiap sudut Leonida secara manual, menolak penggunaan AI generatif untuk dunia GTA VI.",
+  content: `
+    <p>Di tengah gempuran teknologi kecerdasan buatan yang mulai merambah industri kreatif, Rockstar Games memilih jalur yang berbeda untuk mahakarya terbarunya. CEO Take-Two Interactive, <strong>Strauss Zelnick</strong>, secara eksplisit menyatakan bahwa <strong>GTA VI</strong> dibangun tanpa campur tangan AI generatif dalam pembentukan dunianya.</p>
+    
+    <div class="my-12 p-8 bg-zinc-50 dark:bg-zinc-900/50 rounded-[2.5rem] border-l-4 border-pink-500 italic text-xl text-zinc-800 dark:text-zinc-200 shadow-sm leading-relaxed">
+      "Dunia mereka dibuat dengan tangan. Itulah yang membedakan mereka. Khususnya terkait GTA VI, Generative AI sama sekali tidak berperan dalam apa yang sedang dibangun oleh Rockstar Games."
+    </div>
+
+    <h3>Filosofi 'Handmade' Rockstar</h3>
+    <p>Rockstar Games telah lama dikenal sebagai pengembang yang memiliki standar ketelitian gila-gilaan. Penegasan Zelnick ini muncul sebagai respons atas kekhawatiran investor pasca pengumuman <i>Project Genie</i> dari Google sebuah alat AI yang mampu menciptakan dunia virtual secara otomatis.</p>
+    
+    <p>Bagi Rockstar, setiap jengkal aspal di Vice City, setiap bayangan gedung di Leonida, hingga ekosistem rawa yang kompleks, dikerjakan secara manual oleh tim pengembang. Zelnick menekankan bahwa dunia GTA VI tidak dihasilkan secara prosedural, melainkan melalui sentuhan manusia yang mendalam untuk memastikan otentisitas pengalaman bermain.</p>
+    
+    <div class="relative my-16 overflow-hidden rounded-[3rem] aspect-video shadow-2xl group bg-zinc-900">
+      <img src="https://media-rockstargames-com.akamaized.net/mfe6/prod/__common/img/7680072b25ed8a4869c991f86f78f860.jpg" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000" alt="GTA VI Detail" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10">
+          <p class="text-pink-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Exclusive Insight</p>
+          <h4 class="text-white text-2xl font-black uppercase italic italic">Detail Tanpa Kompromi</h4>
+      </div>
+    </div>
+
+    <h3>AI Sebagai Alat, Bukan Kreator</h3>
+    <p>Meskipun menolak AI generatif untuk membangun dunia, Take-Two tidak sepenuhnya menutup mata terhadap teknologi. Zelnick mengungkapkan bahwa perusahaan telah lama mengintegrasikan <i>machine learning</i> untuk efisiensi produksi dan operasional di balik layar.</p>
+    
+    <p>Namun, ia memberikan garis tegas antara "alat" dan "kreativitas". Menurutnya, teknologi hanyalah pendukung, sementara kreator manusia tetap menjadi pusat dari pengalaman hiburan. "Alat bukanlah pengalaman hiburan. Para kreator menggunakan alat untuk menciptakan hiburan yang hebat," jelasnya.</p>
+    
+    <p>Dengan jadwal rilis yang semakin dekat pada <strong>19 November 2026</strong>, komitmen Rockstar untuk tetap menggunakan metode tradisional yang teliti ini menjanjikan kualitas yang melampaui ekspektasi industri manapun saat ini.</p>
+  `
+},
 ];
