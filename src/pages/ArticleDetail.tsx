@@ -50,9 +50,8 @@ export default function ArticleDetail() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
           
           <div className="flex flex-wrap items-center gap-4">
-            {/* PERBAIKAN: Link ke Halaman Kategori */}
             <Link to={`/category/${post.category.toLowerCase()}`}>
-              <span className="px-4 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 dark:hover:bg-pink-500 transition-all">
+              <span className="px-4 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 dark:hover:bg-pink-500 transition-all shadow-sm">
                 {post.category}
               </span>
             </Link>
@@ -127,15 +126,25 @@ export default function ArticleDetail() {
             />
           </div>
 
-          {/* --- TAGS SECTION --- */}
+          {post.source && (
+            <div className="mt-12 pt-6 border-t border-zinc-100 dark:border-zinc-900">
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                Source: <span className="text-pink-500 font-bold">{post.source}</span>
+              </p>
+            </div>
+          )}
+
+          {/* --- TAGS SECTION (DENGAN JARAK LEGA) --- */}
           <div className="mt-16 pt-8 border-t border-zinc-100 dark:border-zinc-900">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-6 flex items-center gap-2">
               <Hash size={12} /> Related Topics
             </h4>
-            <div className="flex flex-wrap gap-2">
+            
+            {/* Perbaikan: Menambahkan gap-y-4 untuk jarak vertikal yang lega */}
+            <div className="flex flex-wrap gap-x-3 gap-y-4 md:gap-x-4 md:gap-y-5"> 
               {post.tags.map((tag) => (
                 <Link to={`/tag/${tag.toLowerCase()}`} key={tag}>
-                  <span className="px-4 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-800 hover:border-pink-500 hover:text-pink-500 transition-all cursor-pointer active:scale-95">
+                  <span className="inline-block px-5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-800 hover:border-pink-500 hover:text-pink-500 transition-all cursor-pointer active:scale-95 shadow-sm">
                     {tag}
                   </span>
                 </Link>
@@ -143,8 +152,8 @@ export default function ArticleDetail() {
             </div>
           </div>
 
-          {/* Social Interactions */}
-          <div className="mt-16 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex flex-col gap-12 text-zinc-900 dark:text-white">
+          {/* DESKTOP SOCIAL (Bottom) */}
+          <div className="hidden md:flex mt-16 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex-col gap-12 text-zinc-900 dark:text-white">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                    <button className="flex items-center gap-2 font-bold text-sm hover:text-pink-500 transition-colors"><Heart size={20} /> 1.2k</button>
@@ -194,7 +203,29 @@ export default function ArticleDetail() {
         </aside>
       </main>
 
-      {/* --- FOOTER --- */}
+      {/* --- MOBILE FLOATING ACTION BAR (MELAYANG) --- */}
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
+        <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-6 py-4 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+          <button className="flex items-center gap-2 group">
+            <Heart size={20} className="text-zinc-400 group-active:text-pink-500 transition-colors" />
+            <span className="text-[10px] font-black uppercase">1.2k</span>
+          </button>
+          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
+          <button className="flex items-center gap-2">
+            <MessageCircle size={20} className="text-zinc-400" />
+            <span className="text-[10px] font-black uppercase">84</span>
+          </button>
+          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
+          <button>
+            <Bookmark size={20} className="text-zinc-400" />
+          </button>
+          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
+          <button>
+            <Share2 size={20} className="text-zinc-400" />
+          </button>
+        </div>
+      </div>
+
       <footer className="py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 pb-32 lg:pb-24">
         <div className="flex flex-col items-center gap-12">
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex flex-col items-center gap-4">
@@ -215,7 +246,6 @@ export default function ArticleDetail() {
         </div>
       </footer>
 
-      {/* --- REPAIR STYLE TAGS --- */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

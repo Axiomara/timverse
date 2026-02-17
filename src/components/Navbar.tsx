@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Sun, Moon, Menu, X, ArrowRight } from "lucide-react"
+import { Link } from "react-router-dom" // Pastikan import Link
 import useDarkMode from "../hooks/useDarkMode"
 
 export default function Navbar() {
@@ -15,7 +16,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Mengunci scroll body saat menu mobile terbuka agar user fokus pada menu
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -25,9 +25,9 @@ export default function Navbar() {
   }, [open])
 
   const navLinks = [
-    { name: "Movies", href: "#" },
-    { name: "Games", href: "#" },
-    { name: "Music", href: "#" },
+    { name: "Movies", href: "/category/movies" },
+    { name: "Games", href: "/category/gaming" },
+    { name: "Music", href: "/category/music" },
   ]
 
   return (
@@ -41,33 +41,37 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center relative z-[110]">
           
-          {/* Logo Section */}
-          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => setOpen(false)}>
+          {/* --- LOGO SECTION (DIPERBAIKI) --- */}
+          <Link 
+            to="/" 
+            className="flex items-center gap-3 group cursor-pointer" 
+            onClick={() => setOpen(false)}
+          >
             <div className="relative overflow-hidden w-10 h-10 bg-zinc-900 dark:bg-white rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-[10deg]">
               <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <span className="relative z-10 text-white dark:text-zinc-900 group-hover:text-white font-black text-xl transition-colors">T</span>
+              <span className="relative z-10 text-white dark:text-zinc-900 group-hover:text-white font-black text-xl transition-colors">P</span>
             </div>
             <div className="flex flex-col leading-none">
               <h1 className="text-xl font-black tracking-[0.1em] dark:text-white text-zinc-900 uppercase">
-                TIMVERSE
+                POPVERSE
               </h1>
               <span className={`text-[10px] font-bold text-pink-500 tracking-widest uppercase transition-all transform ${open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0'}`}>
                 Magazine
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 p-1.5 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl backdrop-blur-md">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className="relative px-6 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 group/link"
               >
                 {link.name}
                 <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-pink-500 rounded-full transition-all group-hover/link:w-4" />
-              </a>
+              </Link>
             ))}
             
             <div className="w-[1px] h-6 bg-zinc-300 dark:bg-zinc-700 mx-1 opacity-50" />
@@ -112,18 +116,15 @@ export default function Navbar() {
             : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* Konten Menu */}
         <div className="absolute inset-0 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl flex flex-col justify-between px-8 pt-32 pb-12">
-          
-          {/* Menu Links */}
           <div className="space-y-6">
             <p className="text-[10px] font-black underline decoration-pink-500 decoration-2 underline-offset-8 tracking-[0.3em] text-zinc-400 uppercase mb-10">Main Navigation</p>
             
             <div className="flex flex-col gap-8">
               {navLinks.map((link, i) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   className="group flex items-center justify-between"
                   onClick={() => setOpen(false)}
                 >
@@ -141,12 +142,11 @@ export default function Navbar() {
                     className={`text-pink-500 transition-all duration-700 opacity-0 group-hover:opacity-100 -translate-x-5 group-hover:translate-x-0`} 
                     size={32}
                   />
-                </a>
+                </Link>
               ))}
             </div>
           </div>
           
-          {/* Bottom Actions Mobile */}
           <div className={`space-y-6 transition-all duration-700 delay-300 ${open ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
             <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
               <div className="flex items-center gap-3">
@@ -167,7 +167,6 @@ export default function Navbar() {
               JOIN POPVERSE <ArrowRight />
             </button>
           </div>
-
         </div>
       </div>
     </nav>

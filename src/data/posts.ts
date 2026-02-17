@@ -12,6 +12,7 @@ export interface Post {
   excerpt: string;
   content: string;
   tags: string[]; 
+  source?: string;
 }
 
 export const BLOG_POSTS: Post[] = [
@@ -25,6 +26,7 @@ export const BLOG_POSTS: Post[] = [
     readTime: "8 Min",
     image: "https://images7.alphacoders.com/107/1079478.jpg",
     tags: ["Marvel", "MCU", "Superhero", "X-Men", "Movies", "Cinematic"],
+    source: "Marvel.com",
     excerpt: "Setelah satu dekade penuh antisipasi, Kevin Feige akhirnya mengonfirmasi bahwa mutan akan menjadi poros utama dalam masa depan MCU.",
     content: `
       <p>Dunia pahlawan super akan mengalami pergeseran tektonik yang tak terelakkan. Dalam presentasi mendadak di Hall H pagi ini, Kevin Feige secara resmi mengumumkan bahwa Phase 7 akan bertajuk <strong>"The Mutant Era"</strong>.</p>
