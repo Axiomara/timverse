@@ -6,18 +6,65 @@ import NotFound from "./NotFound"
 import { 
   ArrowLeft, Bookmark, Share2, Clock, Calendar, 
   MessageCircle, Heart, Twitter, Facebook, 
-  Link as LinkIcon, Zap, Hash, Check 
+  Link as LinkIcon, Zap, Hash, Check, ArrowRight,
+  Type, CaseUpper, CaseLower
 } from "lucide-react"
+
+// --- SUB-KOMPONEN RELATED POSTS ---
+function RelatedPosts({ currentCategory, currentSlug }: { currentCategory: string, currentSlug: string }) {
+  const related = BLOG_POSTS.filter(
+    (post) => post.category === currentCategory && post.slug !== currentSlug
+  ).slice(0, 3);
+
+  if (related.length === 0) return null;
+
+  return (
+    <section className="mt-20 pt-12 border-t border-zinc-100 dark:border-zinc-900">
+      <div className="flex items-center justify-between mb-10">
+        <h3 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400">
+          More in <span className="text-pink-500">{currentCategory}</span>
+        </h3>
+        <Link to={`/category/${currentCategory.toLowerCase()}`} className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-pink-500 transition-colors">
+          View All <ArrowRight size={14} className="group-hover:translate-x-1 transition-all" />
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        {related.map((post) => (
+          <Link to={`/article/${post.slug}`} key={post.slug} className="group space-y-5">
+            <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-100 dark:border-zinc-900">
+              <img 
+                src={post.image} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                alt={post.title} 
+              />
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-black text-lg leading-tight group-hover:text-pink-500 transition-colors line-clamp-2 uppercase italic tracking-tighter text-zinc-900 dark:text-white">
+                {post.title}
+              </h4>
+              <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+                <Calendar size={12} className="text-pink-500/50" /> {post.date}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [completion, setCompletion] = useState(0)
   const [copied, setCopied] = useState(false)
+  
+  // --- STATE READING MODE ---
+  const [fontSize, setFontSize] = useState(20) // Default 20px
+  const [isSerif, setIsSerif] = useState(false) // Toggle Serif vs Sans
 
-  // Cari data berita berdasarkan slug di URL
   const post = BLOG_POSTS.find((p) => p.slug === slug)
 
-  // Progress Bar Logic
   useEffect(() => {
     const updateScrollCompletion = () => {
       const currentProgress = window.scrollY
@@ -30,7 +77,6 @@ export default function ArticleDetail() {
     return () => window.removeEventListener("scroll", updateScrollCompletion)
   }, [])
 
-  // --- LOGIKA SHARE ---
   const handleShare = async (platform: 'twitter' | 'facebook' | 'copy') => {
     const url = window.location.href;
     const title = post?.title || "Check this out!";
@@ -66,13 +112,11 @@ export default function ArticleDetail() {
     }
   };
 
-  // Jika berita tidak ditemukan, tampilkan 404
   if (!post) return <NotFound />
 
   return (
     <div className="relative min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-500 overflow-x-hidden font-sans selection:bg-pink-500/30">
       
-      {/* --- READING PROGRESS BAR --- */}
       <div className="fixed top-0 left-0 w-full h-1 z-[120] pointer-events-none">
         <div 
           className="h-full bg-pink-500 transition-all duration-150 ease-out"
@@ -82,17 +126,14 @@ export default function ArticleDetail() {
 
       <Navbar />
 
-      {/* --- ARTICLE HEADER --- */}
       <header className="relative pt-32 md:pt-48 pb-12 max-w-5xl mx-auto px-6">
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          
           <div className="flex flex-wrap items-center gap-4">
             <Link to={`/category/${post.category.toLowerCase()}`}>
               <span className="px-4 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 dark:hover:bg-pink-500 transition-all shadow-sm">
                 {post.category}
               </span>
             </Link>
-            
             <div className="flex items-center gap-4 text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
               <span className="flex items-center gap-1.5"><Clock size={14} className="text-pink-500" /> {post.readTime}</span>
               <span className="flex items-center gap-1.5"><Calendar size={14} /> {post.date}</span>
@@ -118,7 +159,6 @@ export default function ArticleDetail() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              {/* DESKTOP SHARE WITH TOOLTIP */}
               <div className="relative group/share">
                 <button 
                   onClick={() => handleShare('copy')}
@@ -137,7 +177,6 @@ export default function ArticleDetail() {
         </div>
       </header>
 
-      {/* --- FEATURED IMAGE --- */}
       <section className="max-w-7xl mx-auto px-0 md:px-6 mb-12 md:mb-24">
         <div className="relative aspect-[16/10] md:aspect-[21/9] md:rounded-[3.5rem] overflow-hidden shadow-2xl bg-zinc-100 dark:bg-zinc-900">
           <img src={post.image} className="w-full h-full object-cover" alt={post.title} />
@@ -145,12 +184,31 @@ export default function ArticleDetail() {
         </div>
       </section>
 
-      {/* --- CONTENT & SIDEBAR --- */}
       <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 pb-32">
-        
         <article className="lg:col-span-8">
-          <div className="prose prose-zinc dark:prose-invert prose-lg max-w-none prose-headings:italic prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tighter prose-blockquote:border-pink-500">
-            
+          
+          {/* --- READING MODE CONTROLS --- */}
+          <div className="flex items-center gap-4 mb-10 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 w-fit animate-in fade-in slide-in-from-left-4 duration-700">
+            <div className="flex items-center gap-2 pr-4 border-r border-zinc-200 dark:border-zinc-800">
+              <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-pink-500"><CaseLower size={18}/></button>
+              <span className="text-[10px] font-black w-10 text-center text-zinc-400">{fontSize}px</span>
+              <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-pink-500"><CaseUpper size={18}/></button>
+            </div>
+            <button 
+              onClick={() => setIsSerif(!isSerif)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isSerif ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}
+            >
+              <Type size={14} /> {isSerif ? 'Serif Mode' : 'Sans Mode'}
+            </button>
+          </div>
+
+          <div 
+            className="prose prose-zinc dark:prose-invert prose-lg max-w-none prose-headings:italic prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tighter prose-blockquote:border-pink-500 transition-all duration-300"
+            style={{ 
+                fontSize: `${fontSize}px`, 
+                fontFamily: isSerif ? '"Source Serif 4", Georgia, serif' : 'inherit' 
+            }}
+          >
             <div className="not-prose bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 p-8 rounded-[2.5rem] mb-12 text-zinc-900 dark:text-white">
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-pink-500 mb-4 flex items-center gap-2">
                 <Zap size={14} fill="currentColor" /> Quick Summary
@@ -181,6 +239,9 @@ export default function ArticleDetail() {
               </p>
             </div>
           )}
+
+          {/* --- INTEGRASI RELATED POSTS --- */}
+          <RelatedPosts currentCategory={post.category} currentSlug={post.slug} />
 
           <div className="mt-16 pt-8 border-t border-zinc-100 dark:border-zinc-900">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-6 flex items-center gap-2">
@@ -246,7 +307,6 @@ export default function ArticleDetail() {
         </aside>
       </main>
 
-      {/* --- MOBILE FLOATING ACTION BAR --- */}
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
         <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-6 py-4 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <button className="flex items-center gap-2 group active:scale-95 transition-transform">
@@ -275,7 +335,6 @@ export default function ArticleDetail() {
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">Top of Page</span>
           </button>
-          
           <div className="space-y-6 text-zinc-900 dark:text-white">
             <h2 className="text-3xl font-black tracking-[0.4em] uppercase opacity-10">Popverse</h2>
             <div className="flex gap-8 justify-center text-[9px] font-black uppercase tracking-widest text-zinc-400">
@@ -293,7 +352,7 @@ export default function ArticleDetail() {
         .prose blockquote p::before, .prose blockquote p::after { content: none; }
         .prose h3 { margin-top: 2.5rem; margin-bottom: 1.25rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.05em; font-size: 1.875rem; }
         iframe { transform: translateZ(0); -webkit-transform: translateZ(0); will-change: transform; background-color: transparent !important; }
-        .prose { -webkit-overflow-scrolling: touch; }
+        .prose { -webkit-overflow-scrolling: touch; transition: font-size 0.3s ease, font-family 0.3s ease; }
       `}</style>
     </div>
   )
