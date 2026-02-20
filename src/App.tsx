@@ -1,16 +1,20 @@
-import { Routes, Route, useLocation } from "react-router-dom"
-import { useEffect } from "react"
-import Home from "./pages/Home"
-import ArticleDetail from "./pages/ArticleDetail"
-import NotFound from "./pages/NotFound"
-import CategoryPage from "./pages/CategoryPage"
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+// --- IMPORT PAGES ---
+import Home from "./pages/Home";
+import ArticleDetail from "./pages/ArticleDetail";
+import NotFound from "./pages/NotFound";
+import CategoryPage from "./pages/CategoryPage";
+import Login from "./pages/Login"; // <-- Tambahkan import Login
 
 // --- IMPORT FRAMER MOTION ---
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion";
 
-// --- IMPORT SMOOTH SCROLL & PAGE TRANSITION WRAPPER ---
-import SmoothScroll from "./components/SmoothScroll"
-import PageTransitionWrapper from "./components/PageTransitionWrapper" // <-- Import baru
+// --- IMPORT SMOOTH SCROLL & UI COMPONENTS ---
+import SmoothScroll from "./components/SmoothScroll";
+import PageTransitionWrapper from "./components/PageTransitionWrapper";
+
 
 /**
  * ScrollToTop:
@@ -18,28 +22,30 @@ import PageTransitionWrapper from "./components/PageTransitionWrapper" // <-- Im
  * posisi scroll akan kembali ke paling atas secara instan.
  */
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
   
   useEffect(() => {
-    // Scroll ke atas secara instan (tanpa smooth scroll Lenis)
-    // agar transisi halaman dimulai dari atas.
-    window.scrollTo(0, 0)
-  }, [pathname])
+    // Scroll ke atas secara instan agar transisi halaman dimulai dari atas.
+    window.scrollTo(0, 0);
+  }, [pathname]);
   
-  return null
+  return null;
 }
 
 function App() {
-  const location = useLocation(); // <-- Dapatkan objek lokasi saat ini
+  const location = useLocation();
 
   return (
     <SmoothScroll>
+      {/* Komponen Global */}
       <ScrollToTop />
-      
-      {/* AnimatePresence memungkinkan komponen untuk dianimasikan saat dihapus dari DOM */}
-      <AnimatePresence mode="wait"> {/* 'wait' akan menunggu animasi keluar selesai sebelum animasi masuk dimulai */}
-        <Routes location={location} key={location.pathname}> {/* Penting: berikan location & key */}
-          {/* Bungkus setiap Route dengan PageTransitionWrapper */}
+  
+
+      {/* AnimatePresence untuk Transisi Antar Halaman */}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          
+          {/* HOME PAGE */}
           <Route 
             path="/" 
             element={
@@ -48,6 +54,18 @@ function App() {
               </PageTransitionWrapper>
             } 
           />
+
+          {/* LOGIN PAGE */}
+          <Route 
+            path="/login" 
+            element={
+              <PageTransitionWrapper>
+                <Login />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* CATEGORY PAGE */}
           <Route 
             path="/category/:categoryName" 
             element={
@@ -56,6 +74,8 @@ function App() {
               </PageTransitionWrapper>
             } 
           />
+
+          {/* TAG PAGE */}
           <Route 
             path="/tag/:tagName" 
             element={
@@ -64,6 +84,8 @@ function App() {
               </PageTransitionWrapper>
             } 
           />
+
+          {/* ARTICLE DETAIL PAGE */}
           <Route 
             path="/article/:slug" 
             element={
@@ -72,6 +94,8 @@ function App() {
               </PageTransitionWrapper>
             } 
           />
+
+          {/* 404 NOT FOUND PAGE */}
           <Route 
             path="*" 
             element={
@@ -80,10 +104,11 @@ function App() {
               </PageTransitionWrapper>
             } 
           />
+
         </Routes>
       </AnimatePresence>
     </SmoothScroll>
-  )
+  );
 }
 
-export default App
+export default App;
