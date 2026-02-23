@@ -6,7 +6,8 @@ import Home from "./pages/Home";
 import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
-import Login from "./pages/Login"; // <-- Tambahkan import Login
+import Login from "./pages/Login";
+import About from "./pages/About"; // <-- Import Halaman About Baru
 
 // --- IMPORT FRAMER MOTION ---
 import { AnimatePresence } from "framer-motion";
@@ -15,17 +16,14 @@ import { AnimatePresence } from "framer-motion";
 import SmoothScroll from "./components/SmoothScroll";
 import PageTransitionWrapper from "./components/PageTransitionWrapper";
 
-
 /**
  * ScrollToTop:
- * Memastikan setiap kali user pindah halaman (pathname berubah), 
- * posisi scroll akan kembali ke paling atas secara instan.
+ * Memastikan setiap kali user pindah halaman, posisi scroll kembali ke atas.
  */
 function ScrollToTop() {
   const { pathname } = useLocation();
   
   useEffect(() => {
-    // Scroll ke atas secara instan agar transisi halaman dimulai dari atas.
     window.scrollTo(0, 0);
   }, [pathname]);
   
@@ -39,10 +37,10 @@ function App() {
     <SmoothScroll>
       {/* Komponen Global */}
       <ScrollToTop />
-  
 
       {/* AnimatePresence untuk Transisi Antar Halaman */}
       <AnimatePresence mode="wait">
+        {/* Penting: Berikan location & key agar Framer Motion tahu kapan harus memulai animasi */}
         <Routes location={location} key={location.pathname}>
           
           {/* HOME PAGE */}
@@ -51,6 +49,16 @@ function App() {
             element={
               <PageTransitionWrapper>
                 <Home />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* ABOUT PAGE */}
+          <Route 
+            path="/about" 
+            element={
+              <PageTransitionWrapper>
+                <About />
               </PageTransitionWrapper>
             } 
           />
