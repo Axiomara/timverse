@@ -15,9 +15,9 @@ export default function NotFound() {
           onClick={() => window.location.href = '/'}
         >
           <div className="w-10 h-10 bg-zinc-900 dark:bg-white rounded-xl flex items-center justify-center transition-all duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-lg">
-            <span className="text-white dark:text-zinc-900 font-black text-lg italic">P</span>
+            <span className="text-white dark:text-zinc-900 font-black text-lg italic">T</span>
           </div>
-          <span className="font-black tracking-[0.2em] text-sm uppercase italic opacity-80 group-hover:opacity-100 transition-opacity">Popverse</span>
+          <span className="font-black tracking-[0.2em] text-sm uppercase italic opacity-80 group-hover:opacity-100 transition-opacity">Timverse</span>
         </div>
         <div className="text-[9px] font-black text-zinc-300 dark:text-zinc-700 tracking-[0.4em] uppercase border-l border-zinc-100 dark:border-zinc-900 pl-4">
           Error Log / 404

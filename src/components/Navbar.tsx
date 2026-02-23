@@ -46,10 +46,10 @@ export default function Navbar() {
             <Link to="/" className="flex items-center gap-3 group cursor-pointer" onClick={() => setOpen(false)}>
               <div className="relative overflow-hidden w-10 h-10 bg-zinc-900 dark:bg-white rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-[10deg]">
                 <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10 text-white dark:text-zinc-900 group-hover:text-white font-black text-xl transition-colors">P</span>
+                <span className="relative z-10 text-white dark:text-zinc-900 group-hover:text-white font-black text-xl transition-colors">T</span>
               </div>
               <div className="flex flex-col leading-none">
-                <h1 className="text-xl font-black tracking-[0.1em] dark:text-white text-zinc-900 uppercase">POPVERSE</h1>
+                <h1 className="text-xl font-black tracking-[0.1em] dark:text-white text-zinc-900 uppercase">TIMVERSE</h1>
                 <span className="text-[10px] font-bold text-pink-500 tracking-widest uppercase">Magazine</span>
               </div>
             </Link>

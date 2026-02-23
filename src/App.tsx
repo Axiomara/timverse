@@ -7,7 +7,9 @@ import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import Login from "./pages/Login";
-import About from "./pages/About"; // <-- Import Halaman About Baru
+import About from "./pages/About"; 
+import Timika from "./pages/Timika"; 
+import TimikaNews from "./pages/TImikaNews"; // <-- Import Halaman Berita Timika Baru
 
 // --- IMPORT FRAMER MOTION ---
 import { AnimatePresence } from "framer-motion";
@@ -40,7 +42,6 @@ function App() {
 
       {/* AnimatePresence untuk Transisi Antar Halaman */}
       <AnimatePresence mode="wait">
-        {/* Penting: Berikan location & key agar Framer Motion tahu kapan harus memulai animasi */}
         <Routes location={location} key={location.pathname}>
           
           {/* HOME PAGE */}
@@ -59,6 +60,26 @@ function App() {
             element={
               <PageTransitionWrapper>
                 <About />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* TIMIKA LANDING PAGE */}
+          <Route 
+            path="/timika" 
+            element={
+              <PageTransitionWrapper>
+                <Timika />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* TIMIKA NEWS PAGE (Route Baru) */}
+          <Route 
+            path="/timika/news" 
+            element={
+              <PageTransitionWrapper>
+                <TimikaNews />
               </PageTransitionWrapper>
             } 
           />
