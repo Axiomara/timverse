@@ -9,7 +9,8 @@ import CategoryPage from "./pages/CategoryPage";
 import Login from "./pages/Login";
 import About from "./pages/About"; 
 import Timika from "./pages/Timika"; 
-import TimikaNews from "./pages/TImikaNews"; // <-- Import Halaman Berita Timika Baru
+import TimikaNews from "./pages/TimikaNews"; 
+import TerbaruPage from "./pages/TerbaruPage"; // <-- Import Halaman Lihat Semua Terbaru
 
 // --- IMPORT FRAMER MOTION ---
 import { AnimatePresence } from "framer-motion";
@@ -74,12 +75,22 @@ function App() {
             } 
           />
 
-          {/* TIMIKA NEWS PAGE (Route Baru) */}
+          {/* TIMIKA NEWS MAIN PAGE */}
           <Route 
             path="/timika/news" 
             element={
               <PageTransitionWrapper>
                 <TimikaNews />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* TIMIKA LATEST NEWS (LIHAT SEMUA) */}
+          <Route 
+            path="/timika/news/latest" 
+            element={
+              <PageTransitionWrapper>
+                <TerbaruPage />
               </PageTransitionWrapper>
             } 
           />

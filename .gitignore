@@ -7,6 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Secrets / Environment Variables (TAMBAHKAN INI)
+.env
+.env.local
+.env.production
+.env.development
+.env.*.local
+
+# Dependency directories
 node_modules
 dist
 dist-ssr

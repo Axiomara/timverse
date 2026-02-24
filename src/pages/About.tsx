@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, type Variants, useInView, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, type Variants, useInView, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, Newspaper, Users, Zap, Heart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 // --- KOMPONEN ANIMASI ANGKA (COUNTER) ---
 function Counter({ value }: { value: string }) {
@@ -24,7 +25,7 @@ function Counter({ value }: { value: string }) {
   }, [motionValue, isInView, numericValue]);
 
   useEffect(() => {
-    springValue.on("change", (latest) => {
+    return springValue.on("change", (latest) => {
       if (ref.current) {
         ref.current.textContent = Intl.NumberFormat("en-US").format(Math.floor(latest)) + suffix;
       }
@@ -59,7 +60,6 @@ const features = [
 ];
 
 export default function About() {
-  // Anggap kita mendeteksi tema dari class 'dark' di elemen html
   const [isDarkMode, setIsDarkMode] = useState(document.documentElement.classList.contains('dark'));
 
   useEffect(() => {
@@ -72,14 +72,13 @@ export default function About() {
 
   return (
     <motion.div 
-      // ANIMASI TRANSISI BACKGROUND
       initial={false}
       animate={{ 
         backgroundColor: isDarkMode ? "#080808" : "#fafafa",
         color: isDarkMode ? "#f4f4f5" : "#18181b" 
       }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="min-h-screen w-full relative overflow-hidden selection:bg-pink-500/30"
+      className="min-h-screen w-full relative overflow-x-hidden selection:bg-pink-500/30"
     >
       <Navbar />
       
@@ -95,7 +94,7 @@ export default function About() {
         />
       </div>
 
-      <div className="max-w-[1300px] mx-auto px-5 sm:px-10 pt-32 md:pt-52 pb-20 relative z-10">
+      <div className="max-w-[1300px] mx-auto px-6 sm:px-10 pt-32 md:pt-52 pb-20 relative z-10">
         
         {/* --- HERO SECTION --- */}
         <section className="flex flex-col lg:grid lg:grid-cols-12 gap-8 md:gap-12 mb-24 md:mb-52">
@@ -171,7 +170,7 @@ export default function About() {
                 key={index}
                 variants={fadeUp}
                 whileHover={{ y: -5 }}
-                className="group p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border border-zinc-200 dark:border-zinc-800/50 hover:bg-zinc-900 dark:hover:bg-zinc-100 transition-all duration-500"
+                className="group p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] bg-white/50 dark:bg-zinc-900/40 backdrop-blur-md border border-zinc-200 dark:border-zinc-800/50 hover:bg-zinc-900 dark:hover:bg-zinc-100 transition-all duration-500 shadow-sm"
               >
                 <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center mb-12 md:mb-20 group-hover:scale-110 transition-transform`}>
                   {item.icon}
@@ -210,6 +209,8 @@ export default function About() {
           </div>
         </motion.div>
       </div>
+
+      <Footer />
 
       <style>{`
         @keyframes spin-slow {
