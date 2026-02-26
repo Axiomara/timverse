@@ -81,7 +81,6 @@ export default function TerbaruPage() {
               <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Mimika Daily News Feed</p>
             </div>
 
-            {/* SEARCH BAR (Mobile Responsive) */}
             <div className="relative w-full md:w-80 group">
               <input 
                 type="text"
@@ -95,7 +94,6 @@ export default function TerbaruPage() {
           </div>
         </div>
 
-        {/* --- DROPDOWN FILTER --- */}
         <div className="relative z-40 mb-12 md:mb-16">
           <button 
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

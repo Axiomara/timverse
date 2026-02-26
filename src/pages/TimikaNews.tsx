@@ -1,25 +1,14 @@
 import { motion, useScroll, useSpring } from "framer-motion";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { 
-  TrendingUp, Activity, ChevronRight,
-  Zap, Flame, Calendar,
-  CloudRain, Sun, Cloud, Wind, Droplets,
-  MapPin, Clock, Globe
+  TrendingUp, Activity, ChevronRight, Zap, Flame, Calendar,
+  Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon
 } from "lucide-react";
 
-// Components
+// Components (Pastikan path sesuai dengan project Anda)
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-// --- TYPES ---
-interface WeatherState {
-  temp: number;
-  condition: string;
-  humidity: number;
-  wind: number;
-  loading: boolean;
-}
 
 // --- MOCK DATA ---
 const DAFTAR_BERITA = [
@@ -30,6 +19,7 @@ const DAFTAR_BERITA = [
     ringkasan: "Para ahli lingkungan mulai memetakan langkah-langkah darurat untuk menjaga sisa salju abadi yang kian menyusut di pegunungan tengah...",
     gambar: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80",
     tanggal: "24 Feb 2026",
+    readTime: "6 min read",
     isPopular: true
   },
   {
@@ -39,6 +29,7 @@ const DAFTAR_BERITA = [
     ringkasan: "PT Freeport Indonesia mencatatkan rekor efisiensi baru dalam operasional tambang bawah tanah mereka yang sangat kompleks di Mimika...",
     gambar: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&q=80",
     tanggal: "22 Feb 2026",
+    readTime: "8 min read",
     isPopular: true
   },
   {
@@ -48,6 +39,7 @@ const DAFTAR_BERITA = [
     ringkasan: "Karya seni ukir kayu yang ikonik akan dipamerkan sepanjang pesisir Mimika dalam perayaan tahunan yang sempat tertunda...",
     gambar: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80",
     tanggal: "20 Feb 2026",
+    readTime: "4 min read",
     isNew: true
   },
   {
@@ -57,265 +49,307 @@ const DAFTAR_BERITA = [
     ringkasan: "Pemerintah daerah menargetkan penyelesaian terminal baru pada akhir tahun ini untuk mendukung mobilitas udara...",
     gambar: "https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80",
     tanggal: "19 Feb 2026",
+    readTime: "5 min read",
     isNew: true
   }
 ];
 
-// --- SUB-COMPONENTS ---
-const ArrowUpRight = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 17L17 7M17 7H7M17 7V17"/>
-  </svg>
-);
-
-const WeatherIcon = ({ condition }: { condition: string }) => {
-  switch (condition) {
-    case 'Rain': return <CloudRain className="text-blue-500" size={20} />;
-    case 'Clouds': return <Cloud className="text-zinc-400" size={20} />;
-    default: return <Sun className="text-amber-500" size={20} />;
-  }
-};
-
 export default function TimikaNews() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
-  const [weather, setWeather] = useState<WeatherState>({ 
-    temp: 28, condition: 'Clear', humidity: 80, wind: 5, loading: true 
-  });
+  const [weather, setWeather] = useState({ temp: 28, condition: 'Clear', humidity: 80, wind: 5, loading: true });
 
   const beritaPopuler = useMemo(() => DAFTAR_BERITA.filter(b => b.isPopular), []);
   const beritaTerbaru = useMemo(() => DAFTAR_BERITA.filter(b => b.isNew), []);
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      const API_KEY = import.meta.env.VITE_OPENWEATHER_KEY;
-      const URL = `https://api.openweathermap.org/data/2.5/weather?lat=-4.65&lon=136.46&appid=${API_KEY}&units=metric`;
-
-      if (!API_KEY) {
-        setTimeout(() => setWeather(prev => ({ ...prev, loading: false })), 1000);
-        return;
-      }
-
-      try {
-        const response = await fetch(URL);
-        const data = await response.json();
-        if (response.ok) {
-          setWeather({
-            temp: Math.round(data.main.temp),
-            condition: data.weather[0].main,
-            humidity: data.main.humidity,
-            wind: data.wind.speed,
-            loading: false
-          });
-        }
-      } catch (error) {
-        setWeather(prev => ({ ...prev, loading: false }));
-      }
-    };
-    fetchWeather();
+    const timer = setTimeout(() => setWeather(prev => ({ ...prev, loading: false })), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
+  
+
+  const WeatherWidget = () => {
+
+  const hour = new Date().getHours();
+  const isNight = hour < 6 || hour > 18;
+
+  
+  const getWeatherIcon = () => {
+    if (weather.loading) return <Sun className="text-zinc-300 animate-pulse" size={32} />;
+    
+    
+    if (isNight) {
+      return <Moon className="text-indigo-400" size={32} />;
+    }
+    
+    
+    if (weather.condition.toLowerCase().includes('cloud')) {
+      return <Cloud className="text-zinc-400" size={32} />;
+    }
+    
+    return <Sun className="text-amber-500" size={32} />;
+  };
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-white dark:bg-[#080808] dark:text-zinc-100 text-zinc-900 selection:bg-pink-500 selection:text-white">
-      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-purple-500 origin-left z-[130]" style={{ scaleX }} />
+    <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm group transition-all duration-500 hover:shadow-xl">
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+            <MapPin size={12} className="text-pink-500" /> Timika, ID
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">
+              {isNight ? "Night Mode" : "Live Data"}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-6xl font-black tracking-tighter tabular-nums leading-none">
+              {weather.loading ? "--" : `${weather.temp}°`}
+            </span>
+            <p className="text-[10px] font-black uppercase text-zinc-500 mt-2 tracking-[0.2em]">
+              {weather.condition}
+            </p>
+          </div>
+          
+          {/* Container Ikon dengan warna background yang menyesuaikan waktu */}
+          <div className={`p-4 rounded-2xl group-hover:rotate-12 transition-transform duration-500 shadow-inner ${
+            isNight ? 'bg-indigo-500/10' : 'bg-amber-500/10'
+          }`}>
+            {getWeatherIcon()}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-50 dark:border-zinc-800">
+          <div className="space-y-1">
+            <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Humidity</p>
+            <p className="text-xs font-bold flex items-center gap-1">
+              <Droplets size={10} className="text-blue-500" /> {weather.humidity}%
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Wind Speed</p>
+            <p className="text-xs font-bold flex items-center gap-1">
+              <Wind size={10} className="text-teal-500" /> {weather.wind} km/h
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  const TrendingWidget = () => (
+    <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm space-y-8 group transition-all duration-500 hover:shadow-xl">
+      <div className="flex items-center justify-between border-b border-zinc-50 dark:border-zinc-800 pb-5">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-pink-500/10 rounded-lg">
+            <TrendingUp size={14} className="text-pink-500" />
+          </div>
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Trending Now</h3>
+        </div>
+        <Activity size={12} className="text-zinc-300 animate-pulse" />
+      </div>
+      <div className="space-y-1">
+        {['Jadwal Penerbangan Kilangin', 'Harga Sagu Mimika', 'Loker Freeport 2026', 'Info Pemadaman PLN'].map((item, i) => (
+          <div key={i} className="group/item cursor-pointer flex items-center gap-5 p-3 -mx-3 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
+            <span className="text-2xl font-black text-zinc-100 dark:text-zinc-800 group-hover/item:text-pink-500 transition-colors italic tracking-tighter">0{i + 1}</span>
+            <p className="text-[11px] font-bold uppercase leading-tight text-zinc-700 dark:text-zinc-300 group-hover/item:translate-x-1 transition-transform truncate">{item}</p>
+            <ChevronRight size={14} className="ml-auto opacity-0 group-hover/item:opacity-100 text-pink-500 transition-all" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const FlashNewsWidget = () => (
+    <div className="p-8 rounded-[2.5rem] bg-zinc-900 dark:bg-white text-white dark:text-black border border-zinc-800 dark:border-zinc-100 shadow-sm relative overflow-hidden group transition-all duration-500 hover:shadow-xl">
+      <div className="relative z-10 space-y-8">
+        <div className="flex justify-between items-center border-b border-white/10 dark:border-black/5 pb-5">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-pink-500 rounded-lg">
+              <Zap size={14} fill="currentColor" />
+            </div>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em]">Flash News</h3>
+          </div>
+          <div className="flex h-2 w-2 rounded-full bg-pink-500 animate-ping" />
+        </div>
+        <div className="space-y-6">
+          {[
+            { jam: "14:20", teks: "Pawai budaya di Jalan Cenderawasih dimulai sore ini." },
+            { jam: "12:05", teks: "Stok sagu di Pasar Sentral dilaporkan melimpah." },
+            { jam: "09:45", teks: "Perbaikan pipa air di area SP2 selesai tepat waktu." }
+          ].map((item, i) => (
+            <div key={i} className="flex gap-4 group/news cursor-pointer">
+              <span className="text-[10px] font-black opacity-30 tabular-nums">{item.jam}</span>
+              <p className="text-[11px] font-bold leading-relaxed opacity-80 group-hover/news:opacity-100 group-hover/news:text-pink-500 transition-all">{item.teks}</p>
+            </div>
+          ))}
+        </div>
+        <button className="w-full py-4 bg-white/5 dark:bg-black/5 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] border border-white/10 dark:border-black/5 hover:bg-pink-500 hover:border-pink-500 hover:text-white transition-all">
+          View Live Feed
+        </button>
+      </div>
+      <Globe size={180} className="absolute -right-12 -bottom-12 opacity-[0.05] dark:opacity-[0.03] animate-spin-slow pointer-events-none" />
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 transition-colors duration-500 selection:bg-pink-500 selection:text-white">
+      <motion.div className="fixed top-0 left-0 right-0 h-[3px] bg-pink-500 origin-left z-[200]" style={{ scaleX }} />
       <Navbar />
 
-      <div className="pt-32 md:pt-44 flex flex-col gap-16">
+      {/* --- HERO SECTION --- */}
+      <header className="pt-32 md:pt-48 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-2 text-pink-600 dark:text-pink-400 font-bold text-[10px] uppercase tracking-[0.4em]">
+            <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+            Suara Akar Rumput Mimika
+          </div>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-zinc-200 dark:border-zinc-800 pb-16">
+            <h1 className="text-[15vw] lg:text-[10rem] font-black tracking-tighter leading-[0.8] uppercase select-none">
+              MIMIK<span className="italic text-zinc-200 dark:text-zinc-800 transition-colors duration-700">A</span><span className="text-pink-500">.</span>
+            </h1>
+            <div className="lg:mb-4 space-y-2 lg:text-right">
+              <div className="flex items-center lg:justify-end gap-2 text-xs font-bold uppercase tracking-widest text-zinc-500">
+                <Calendar size={14} className="text-pink-500" /> {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </div>
+              <p className="text-sm italic opacity-50 font-medium tracking-tight italic">Highlighting the spirit of the highlands.</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 py-12">
         
-        {/* --- HERO HEADER --- */}
-        <header className="px-6 max-w-7xl mx-auto w-full">
-          <div className="flex flex-col gap-8">
+        {/* --- MOBILE WEATHER --- */}
+        <div className="lg:hidden">
+          <WeatherWidget />
+        </div>
+
+        {/* --- LEFT: MAIN FEED --- */}
+        <div className="lg:col-span-8 space-y-24">
+          <section className="space-y-12">
             <div className="flex items-center gap-3">
-              <span className="flex h-2 w-2 rounded-full bg-pink-500 animate-ping" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-pink-500">Mimika Pulse Live</span>
+              <div className="p-2 bg-orange-500/10 rounded-lg"><Flame size={18} className="text-orange-500" /></div>
+              <h2 className="text-xs font-black uppercase tracking-[0.3em]">Editor's Choice</h2>
             </div>
-            
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-zinc-100 dark:border-zinc-900 pb-12">
-              <h1 className="text-[15vw] lg:text-[10rem] font-black tracking-tighter uppercase leading-[0.8]">
-                MIMIK<span className="text-zinc-200 dark:text-zinc-800 italic">A</span><span className="text-pink-500">.</span>
-              </h1>
-              
-              <div className="flex flex-col items-start lg:items-end gap-2 text-zinc-400">
-                <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest">
-                  <Calendar size={14} className="text-pink-500"/>
-                  {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </div>
-                <p className="text-sm font-medium italic opacity-60">Insight lokal, perspektif global.</p>
-              </div>
+
+            <div className="space-y-20">
+              {beritaPopuler.map((berita) => (
+                <article key={berita.id} className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                  <div className="md:col-span-7 overflow-hidden rounded-[2.5rem] bg-zinc-100 dark:bg-zinc-900 aspect-video relative shadow-2xl shadow-black/5">
+                    <img src={berita.gambar} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={berita.judul} />
+                    <div className="absolute top-6 left-6">
+                      <span className="px-4 py-1.5 bg-white/90 dark:bg-black/80 backdrop-blur-md text-[9px] font-black uppercase rounded-full tracking-widest">{berita.kategori}</span>
+                    </div>
+                  </div>
+                  <div className="md:col-span-5 space-y-4 pt-2">
+                    <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                      <Clock size={12} className="text-pink-500" /> {berita.readTime}
+                    </div>
+                    <h3 className="text-3xl font-black leading-[1.1] group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors uppercase tracking-tight">
+                      <Link to={`/news/${berita.id}`}>{berita.judul}</Link>
+                    </h3>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed font-medium">{berita.ringkasan}</p>
+                  </div>
+                </article>
+              ))}
             </div>
-          </div>
-        </header>
+          </section>
 
-        {/* --- GRID CONTENT --- */}
-        <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 mb-32">
-          
-          {/* Main Stories */}
-          <div className="lg:col-span-8 space-y-20">
+          {/* Immersive Banner */}
+                  <div className="relative rounded-[2.5rem] md:rounded-[3rem] overflow-hidden aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9] group shadow-2xl">
+          {/* Image dengan Zoom Effect */}
+          <img 
+            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80" 
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
+            alt="banner" 
+          />
+
+          {/* Gradient Overlay: Di mobile lebih gelap di bawah, di desktop lebih gelap di kiri */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/20 md:to-transparent" />
+
+          {/* Content Container */}
+          <div className="absolute inset-0 flex flex-col justify-end md:justify-center p-8 md:p-16 gap-4 md:gap-6">
             
-            {/* Featured Article */}
-            <section>
-              <div className="flex items-center gap-3 mb-10">
-                <Flame size={20} className="text-orange-500" fill="currentColor" />
-                <h2 className="text-xl font-black uppercase tracking-widest">Top Stories</h2>
+            {/* Label */}
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-pink-500/20 backdrop-blur-md rounded-lg">
+                <Globe size={12} className="text-pink-500 animate-spin-slow" />
               </div>
-              
-              <div className="grid gap-20">
-                {beritaPopuler.map((berita) => (
-                  <motion.article 
-                    key={berita.id} 
-                    className="group grid grid-cols-1 md:grid-cols-12 gap-10 items-start"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="md:col-span-6 overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-900 aspect-[16/10]">
-                      <img src={berita.gambar} className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={berita.judul} />
-                    </div>
-                    <div className="md:col-span-6 space-y-4">
-                      <span className="text-[10px] font-black text-pink-500 uppercase tracking-widest">{berita.kategori}</span>
-                      <h3 className="text-3xl font-black leading-tight group-hover:underline decoration-pink-500 underline-offset-8 transition-all">
-                        <Link to={`/news/${berita.id}`}>{berita.judul}</Link>
-                      </h3>
-                      <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed line-clamp-3">
-                        {berita.ringkasan}
-                      </p>
-                      <Link to={`/news/${berita.id}`} className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest group-hover:text-pink-500 transition-colors">
-                        Read Story <ArrowUpRight size={14} />
-                      </Link>
-                    </div>
-                  </motion.article>
-                ))}
-              </div>
-            </section>
+              <span className="text-pink-400 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">
+                Discovery Series
+              </span>
+            </div>
 
-            {/* Visual Break / Banner */}
-            <section className="relative h-[400px] rounded-[3rem] overflow-hidden group">
-               <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80" className="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" alt="Banner" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-               <div className="absolute bottom-10 left-10 right-10 space-y-4">
-                  <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[9px] font-black uppercase text-white tracking-widest">Deep Dive</span>
-                  <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none max-w-xl">
-                    Jantung Papua: Menjaga Keseimbangan Mimika
-                  </h3>
-               </div>
-            </section>
+            {/* Title: Ukuran menyesuaikan layar */}
+            <h4 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[0.9] md:leading-none uppercase tracking-tighter max-w-sm md:max-w-xl">
+              Lorentz: <br className="hidden md:block" /> 
+              The Hidden <span className="text-pink-500">Emerald</span>
+            </h4>
 
-            {/* Latest Grid */}
-            <section className="space-y-10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Zap size={20} className="text-pink-500" fill="currentColor" />
-                  <h2 className="text-xl font-black uppercase tracking-widest">Latest</h2>
-                </div>
-                <Link to="/news" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 hover:text-pink-500 transition-colors">See all</Link>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {beritaTerbaru.map((berita) => (
-                  <Link to={`/news/${berita.id}`} key={berita.id} className="group space-y-5">
-                    <div className="aspect-video rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                      <img src={berita.gambar} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={berita.judul} />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                        <span>{berita.tanggal}</span>
-                        <span className="h-1 w-1 rounded-full bg-zinc-800" />
-                        <span>5 min read</span>
-                      </div>
-                      <h4 className="text-lg font-black leading-snug group-hover:text-pink-500 transition-colors uppercase">
-                        {berita.judul}
-                      </h4>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
+            {/* Button: Full width di mobile kecil, fit content di desktop */}
+            <button className="w-full md:w-fit px-8 py-4 bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl md:rounded-xl hover:bg-pink-500 hover:text-white transition-all duration-500 shadow-xl active:scale-95">
+              Explore Story
+            </button>
           </div>
+        </div>
 
-          {/* --- SIDEBAR --- */}
-          <aside className="lg:col-span-4 space-y-8">
-            <div className="sticky top-32 space-y-8">
-              
-              {/* Bento Card: Weather */}
-              <div className="p-8 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800 overflow-hidden relative group">
-                <div className="relative z-10 flex flex-col gap-8">
-                  <div className="flex items-center justify-between">
+          {/* Latest Feed */}
+          <section className="space-y-12">
+            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-pink-500/10 rounded-lg"><Zap size={18} className="text-pink-500" /></div>
+                <h2 className="text-xs font-black uppercase tracking-[0.3em]">Fresh Updates</h2>
+              </div>
+              <Link to="/news" className="text-[10px] font-bold uppercase text-zinc-400 hover:text-pink-500 transition-colors flex items-center gap-1 tracking-widest">All Stories <ChevronRight size={14} /></Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {beritaTerbaru.map((berita) => (
+                <Link to={`/news/${berita.id}`} key={berita.id} className="group space-y-6">
+                  <div className="aspect-[16/10] overflow-hidden rounded-[2rem] border border-transparent dark:border-zinc-800/50">
+                    <img src={berita.gambar} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={berita.judul} />
+                  </div>
+                  <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-pink-500" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Timika, Papua</span>
+                       <span className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{berita.tanggal}</span>
+                       <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                       <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Mimika</span>
                     </div>
-                    {weather.loading ? (
-                      <div className="h-4 w-12 bg-zinc-200 dark:bg-zinc-800 animate-pulse rounded" />
-                    ) : (
-                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">via: geo.com</span>
-                    )}
+                    <h4 className="text-xl font-black leading-snug group-hover:text-pink-500 transition-colors uppercase tracking-tight">{berita.judul}</h4>
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <span className="text-6xl font-black tracking-tighter">{weather.temp}°</span>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">{weather.condition}</p>
-                    </div>
-                    <div className="p-4 bg-white dark:bg-zinc-800 rounded-2xl shadow-sm">
-                      <WeatherIcon condition={weather.condition} />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-                    <div className="flex items-center gap-3">
-                      <Droplets size={16} className="text-blue-500" />
-                      <div>
-                        <p className="text-[8px] font-black text-zinc-400 uppercase">Humidity</p>
-                        <p className="text-xs font-bold">{weather.humidity}%</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Wind size={16} className="text-teal-500" />
-                      <div>
-                        <p className="text-[8px] font-black text-zinc-400 uppercase">Wind</p>
-                        <p className="text-xs font-bold">{weather.wind} m/s</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bento Card: Trending List */}
-              <div className="p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-900">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-8 flex items-center gap-2">
-                  <TrendingUp size={14} /> Trending Topics
-                </h3>
-                <div className="space-y-6">
-                  {['Pembangunan Smelter', 'Pariwisata Lorentz', 'Grasberg Update'].map((topic, i) => (
-                    <div key={i} className="flex gap-4 group cursor-pointer">
-                      <span className="text-xl font-black text-zinc-200 dark:text-zinc-800 group-hover:text-pink-500 transition-colors">0{i+1}</span>
-                      <p className="text-[11px] font-black uppercase leading-tight group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
-                        {topic}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bento Card: Tag Cloud */}
-              <div className="p-8 rounded-[2.5rem] bg-zinc-950 text-white">
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-6">Popular Tags</h3>
-                 <div className="flex flex-wrap gap-2">
-                    {['Freeport', 'Papua', 'Kuala Kencana', 'Kamoro'].map(tag => (
-                       <button key={tag} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-                          #{tag}
-                       </button>
-                    ))}
-                 </div>
-              </div>
-
+                </Link>
+              ))}
             </div>
-          </aside>
-        </main>
-      </div>
+          </section>
+        </div>
+
+        {/* --- RIGHT: SIDEBAR (BENTO) --- */}
+        <aside className="lg:col-span-4">
+          <div className="sticky top-32 space-y-8">
+            <div className="hidden lg:block"><WeatherWidget /></div>
+            <TrendingWidget />
+            <FlashNewsWidget />
+          </div>
+        </aside>
+      </main>
+
       <Footer />
+
+      <style>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
