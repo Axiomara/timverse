@@ -87,7 +87,7 @@ export default function Timika() {
 
         {/* --- FIXED PARALLAX IMAGE --- */}
         <motion.div style={{ scale: scaleImage }} className="absolute inset-0 z-0">
-          {/* Gradient Overlay: Diperhalus agar gambar tidak hilang saat dark mode */}
+
           <div className="absolute inset-0 dark:bg-gradient-to-b dark:from-[#050505]/60 dark:via-transparent dark:to-[#050505] from-zinc-50/80 via-transparent to-zinc-50 z-10" />
           
           <img 
