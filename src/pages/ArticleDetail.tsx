@@ -1,27 +1,30 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useParams, Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { BLOG_POSTS } from "../data/posts"
+import { TIMIKA_PULSE_POSTS } from '../data/timikaPulse'
 import NotFound from "./NotFound"
 import { 
   ArrowLeft, Bookmark, Share2, Clock, Calendar, 
-  MessageCircle, Heart, Twitter, Facebook, 
-  Link as LinkIcon, Zap, Hash, Check, ArrowRight,
-  Type, CaseUpper, CaseLower
+  Zap, Hash, Check, ArrowRight,
+  Type, CaseUpper, CaseLower, ExternalLink
 } from "lucide-react"
+
+// --- GABUNGKAN DATA GLOBAL ---
+const ALL_AVAILABLE_POSTS = [...BLOG_POSTS, ...TIMIKA_PULSE_POSTS];
 
 // --- SUB-KOMPONEN RELATED POSTS ---
 function RelatedPosts({ currentCategory, currentSlug }: { currentCategory: string, currentSlug: string }) {
-  const related = BLOG_POSTS.filter(
+  const related = ALL_AVAILABLE_POSTS.filter(
     (post) => post.category === currentCategory && post.slug !== currentSlug
   ).slice(0, 3);
 
   if (related.length === 0) return null;
 
   return (
-    <section className="mt-20 pt-12 border-t border-zinc-100 dark:border-zinc-900">
+    <section className="mt-16 md:mt-24 pt-12 border-t border-zinc-100 dark:border-zinc-900">
       <div className="flex items-center justify-between mb-10">
-        <h3 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400">
+        <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-zinc-400">
           More in <span className="text-pink-500">{currentCategory}</span>
         </h3>
         <Link to={`/category/${currentCategory.toLowerCase()}`} className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-pink-500 transition-colors">
@@ -29,17 +32,17 @@ function RelatedPosts({ currentCategory, currentSlug }: { currentCategory: strin
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
         {related.map((post) => (
           <Link to={`/article/${post.slug}`} key={post.slug} className="group space-y-5">
-            <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-100 dark:border-zinc-900">
+            <div className="relative aspect-[16/10] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm border border-zinc-100 dark:border-zinc-900">
               <img 
                 src={post.image} 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                 alt={post.title} 
               />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 px-1">
               <h4 className="font-black text-lg leading-tight group-hover:text-pink-500 transition-colors line-clamp-2 uppercase italic tracking-tighter text-zinc-900 dark:text-white">
                 {post.title}
               </h4>
@@ -58,12 +61,27 @@ export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [completion, setCompletion] = useState(0)
   const [copied, setCopied] = useState(false)
-  
-  // --- STATE READING MODE ---
-  const [fontSize, setFontSize] = useState(20) // Default 20px
-  const [isSerif, setIsSerif] = useState(false) // Toggle Serif vs Sans
+  const [fontSize, setFontSize] = useState(19) 
+  const [isSerif, setIsSerif] = useState(false)
 
-  const post = BLOG_POSTS.find((p) => p.slug === slug)
+  const post = ALL_AVAILABLE_POSTS.find((p) => p.slug === slug)
+
+  const recommendedPosts = useMemo(() => {
+    if (!post) return [];
+    return ALL_AVAILABLE_POSTS
+      .filter((p) => p.slug !== post.slug)
+      .map((p) => {
+        const sharedTags = p.tags.filter(tag => post.tags.includes(tag)).length;
+        const categoryBonus = p.category === post.category ? 2 : 0;
+        return { ...p, score: sharedTags + categoryBonus };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+  }, [post, slug]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   useEffect(() => {
     const updateScrollCompletion = () => {
@@ -77,39 +95,12 @@ export default function ArticleDetail() {
     return () => window.removeEventListener("scroll", updateScrollCompletion)
   }, [])
 
-  const handleShare = async (platform: 'twitter' | 'facebook' | 'copy') => {
-    const url = window.location.href;
-    const title = post?.title || "Check this out!";
-
-    if (platform === 'copy') {
-      try {
-        await navigator.clipboard.writeText(url);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error("Gagal menyalin!", err);
-      }
-      return;
-    }
-
-    const shareLinks = {
-      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-    };
-
-    window.open(shareLinks[platform], '_blank', 'noopener,noreferrer');
-  };
-
-  const handleNativeShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: post?.title,
-        text: post?.excerpt,
-        url: window.location.href,
-      }).catch(console.error);
-    } else {
-      handleShare('copy');
-    }
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) { console.error(err); }
   };
 
   if (!post) return <NotFound />
@@ -117,242 +108,289 @@ export default function ArticleDetail() {
   return (
     <div className="relative min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-500 overflow-x-hidden font-sans selection:bg-pink-500/30">
       
+      {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 z-[120] pointer-events-none">
-        <div 
-          className="h-full bg-pink-500 transition-all duration-150 ease-out"
-          style={{ width: `${completion}%` }}
-        />
+        <div className="h-full bg-pink-500 transition-all duration-150 ease-out" style={{ width: `${completion}%` }} />
       </div>
 
       <Navbar />
 
-      <header className="relative pt-32 md:pt-48 pb-12 max-w-5xl mx-auto px-6">
+      {/* HEADER SECTION */}
+      <header className="relative pt-28 md:pt-48 pb-12 max-w-5xl mx-auto px-6">
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000">
           <div className="flex flex-wrap items-center gap-4">
             <Link to={`/category/${post.category.toLowerCase()}`}>
-              <span className="px-4 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 dark:hover:bg-pink-500 transition-all shadow-sm">
+              <span className="px-4 py-1.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 transition-all shadow-sm">
                 {post.category}
               </span>
             </Link>
             <div className="flex items-center gap-4 text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
               <span className="flex items-center gap-1.5"><Clock size={14} className="text-pink-500" /> {post.readTime}</span>
-              <span className="flex items-center gap-1.5"><Calendar size={14} /> {post.date}</span>
+              <span className="hidden sm:flex items-center gap-1.5"><Calendar size={14} /> {post.date}</span>
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-[90px] font-black leading-[0.95] tracking-tighter uppercase italic drop-shadow-sm text-zinc-900 dark:text-white">
+          <h1 className="text-4xl md:text-[90px] font-black leading-[1.1] md:leading-[0.95] tracking-tighter uppercase italic text-zinc-900 dark:text-white">
             {post.title} <br />
-            <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent not-italic">
+            <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent not-italic block md:inline">
               {post.titleAccent}
             </span>
           </h1>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pt-10 border-t border-zinc-100 dark:border-zinc-900">
+          <div className="flex flex-row items-center justify-between gap-6 pt-10 border-t border-zinc-100 dark:border-zinc-900">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-inner">
-                <img src={`https://i.pravatar.cc/150?u=${post.author}`} alt={post.author} className="w-full h-full object-cover transition-all duration-500" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden border border-zinc-200 dark:border-zinc-700">
+                <img src={`https://i.pravatar.cc/150?u=${post.author}`} alt={post.author} className="w-full h-full object-cover" />
               </div>
               <div className="text-left">
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400 leading-none mb-1">Lead Editorial</p>
-                <p className="text-sm font-bold hover:text-pink-500 cursor-pointer transition-colors text-zinc-900 dark:text-white">{post.author}</p>
+                <p className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400 leading-none mb-1">Lead Editorial</p>
+                <p className="text-sm font-bold text-zinc-900 dark:text-white">{post.author}</p>
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-3">
-              <div className="relative group/share">
-                <button 
-                  onClick={() => handleShare('copy')}
-                  className="p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90"
-                >
-                  {copied ? <Check size={18} className="text-green-500" /> : <Share2 size={18} />}
-                </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 flex gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover/share:opacity-100 group-hover/share:translate-y-0 group-hover/share:pointer-events-auto transition-all">
-                   <button onClick={() => handleShare('twitter')} className="p-2 hover:text-blue-400 transition-colors"><Twitter size={16}/></button>
-                   <button onClick={() => handleShare('facebook')} className="p-2 hover:text-blue-600 transition-colors"><Facebook size={16}/></button>
-                </div>
-              </div>
-              <button className="p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90 group"><Bookmark size={18} /></button>
+            <div className="flex items-center gap-3">
+              <button onClick={handleShare} className="p-3 md:p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90">
+                {copied ? <Check size={18} className="text-green-500" /> : <Share2 size={18} />}
+              </button>
+              <button className="hidden sm:flex p-4 rounded-full border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-90"><Bookmark size={18} /></button>
             </div>
           </div>
         </div>
       </header>
 
+      {/* HERO IMAGE */}
       <section className="max-w-7xl mx-auto px-0 md:px-6 mb-12 md:mb-24">
-        <div className="relative aspect-[16/10] md:aspect-[21/9] md:rounded-[3.5rem] overflow-hidden shadow-2xl bg-zinc-100 dark:bg-zinc-900">
+        <div className="relative aspect-[4/3] md:aspect-[21/9] md:rounded-[3.5rem] overflow-hidden shadow-2xl bg-zinc-100 dark:bg-zinc-900">
           <img src={post.image} className="w-full h-full object-cover" alt={post.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 pb-32">
+      {/* MAIN CONTENT AREA */}
+      <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 pb-20">
         <article className="lg:col-span-8">
           
-          {/* --- READING MODE CONTROLS --- */}
-          <div className="flex items-center gap-4 mb-10 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 w-fit animate-in fade-in slide-in-from-left-4 duration-700">
-            <div className="flex items-center gap-2 pr-4 border-r border-zinc-200 dark:border-zinc-800">
-              <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-pink-500"><CaseLower size={18}/></button>
+          {/* READING MODE CONTROLS */}
+          <div className="flex items-center gap-3 md:gap-4 mb-12 p-3 md:p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 w-full sm:w-fit overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-2 pr-4 border-r border-zinc-200 dark:border-zinc-800 shrink-0">
+              <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseLower size={18}/></button>
               <span className="text-[10px] font-black w-10 text-center text-zinc-400">{fontSize}px</span>
-              <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-pink-500"><CaseUpper size={18}/></button>
+              <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseUpper size={18}/></button>
             </div>
             <button 
               onClick={() => setIsSerif(!isSerif)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isSerif ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${isSerif ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}
             >
               <Type size={14} /> {isSerif ? 'Serif Mode' : 'Sans Mode'}
             </button>
           </div>
 
           <div 
-            className="prose prose-zinc dark:prose-invert prose-lg max-w-none prose-headings:italic prose-headings:uppercase prose-headings:font-black prose-headings:tracking-tighter prose-blockquote:border-pink-500 transition-all duration-300"
-            style={{ 
-                fontSize: `${fontSize}px`, 
-                fontFamily: isSerif ? '"Source Serif 4", Georgia, serif' : 'inherit' 
-            }}
+            className="prose prose-zinc dark:prose-invert prose-lg max-w-none transition-all duration-300"
+            style={{ fontSize: `${fontSize}px`, fontFamily: isSerif ? '"Source Serif 4", Georgia, serif' : 'inherit' }}
           >
-            <div className="not-prose bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 p-8 rounded-[2.5rem] mb-12 text-zinc-900 dark:text-white">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-pink-500 mb-4 flex items-center gap-2">
+            {/* Quick Summary */}
+            <div className="not-prose bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 p-8 rounded-[2rem] md:rounded-[2.5rem] mb-12">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-pink-500 mb-5 flex items-center gap-2">
                 <Zap size={14} fill="currentColor" /> Quick Summary
               </h4>
-              <ul className="space-y-3">
-                {["Informasi resmi dari narasumber terpercaya.", "Dampak signifikan bagi industri terkait.", "Prediksi tren untuk masa depan."].map((text, i) => (
-                  <li key={i} className="flex gap-3 text-sm font-medium">
-                    <span className="text-zinc-300 dark:text-zinc-700 font-black">0{i+1}</span> {text}
+              <ul className="space-y-4">
+                {["Laporan mendalam khas Popverse.", "Informasi resmi dari narasumber terpercaya.", "Dampak signifikan bagi industri lokal."].map((text, i) => (
+                  <li key={i} className="flex gap-4 text-sm font-medium">
+                    <span className="text-pink-500 font-black">0{i+1}</span> {text}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <p className="text-xl md:text-2xl font-medium leading-relaxed text-zinc-500 dark:text-zinc-400 italic mb-12 first-letter:text-7xl first-letter:font-black first-letter:text-zinc-900 dark:first-letter:text-white first-letter:mr-3 first-letter:float-left first-letter:mt-2">
+            <p className="text-xl md:text-2xl font-medium leading-relaxed text-zinc-500 dark:text-zinc-400 italic mb-12">
               {post.excerpt}
             </p>
 
-            <div 
-              className="text-zinc-800 dark:text-zinc-200 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.content }} 
-            />
+            <div className="text-zinc-800 dark:text-zinc-200 leading-relaxed article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+
+            {/* Source Info */}
+            {post.source && (
+              <div className="not-prose mt-12 p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-100 dark:border-zinc-800 flex items-center justify-between group">
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">Original Source</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-white">{post.source}</p>
+                </div>
+                <a href={post.sourceUrl || "#"} target="_blank" rel="noopener noreferrer" className="p-3 rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:text-pink-500 transition-all shadow-sm">
+                  <ExternalLink size={18} />
+                </a>
+              </div>
+            )}
           </div>
 
-          {post.source && (
-            <div className="mt-12 pt-6 border-t border-zinc-100 dark:border-zinc-900">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                Source: <span className="text-pink-500 font-bold">{post.source}</span>
-              </p>
-            </div>
-          )}
-
-          {/* --- INTEGRASI RELATED POSTS --- */}
           <RelatedPosts currentCategory={post.category} currentSlug={post.slug} />
 
+          {/* Tags Section */}
           <div className="mt-16 pt-8 border-t border-zinc-100 dark:border-zinc-900">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-6 flex items-center gap-2">
-              <Hash size={12} /> Related Topics
-            </h4>
-            <div className="flex flex-wrap gap-x-3 gap-y-4 md:gap-x-4 md:gap-y-5"> 
+            <div className="flex flex-wrap gap-2 md:gap-3"> 
               {post.tags.map((tag) => (
                 <Link to={`/tag/${tag.toLowerCase()}`} key={tag}>
-                  <span className="inline-block px-5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-800 hover:border-pink-500 hover:text-pink-500 transition-all cursor-pointer active:scale-95 shadow-sm">
-                    {tag}
+                  <span className="inline-block px-4 py-2 md:px-5 md:py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-800 hover:border-pink-500 hover:text-pink-500 transition-all">
+                    #{tag}
                   </span>
                 </Link>
               ))}
             </div>
           </div>
-
-          <div className="hidden md:flex mt-16 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex-col gap-12 text-zinc-900 dark:text-white">
-             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                   <button className="flex items-center gap-2 font-bold text-sm hover:text-pink-500 transition-colors"><Heart size={20} /> 1.2k</button>
-                   <button className="flex items-center gap-2 font-bold text-sm hover:text-indigo-500 transition-colors"><MessageCircle size={20} /> 84</button>
-                </div>
-                <div className="flex gap-4">
-                   <Twitter onClick={() => handleShare('twitter')} size={18} className="cursor-pointer hover:text-blue-400 transition-colors" />
-                   <Facebook onClick={() => handleShare('facebook')} size={18} className="cursor-pointer hover:text-blue-600 transition-colors" />
-                   <LinkIcon onClick={() => handleShare('copy')} size={18} className={`cursor-pointer transition-colors ${copied ? 'text-green-500' : 'hover:text-pink-500'}`} />
-                </div>
-             </div>
-          </div>
         </article>
 
-        <aside className="lg:col-span-4 space-y-16">
-          <div className="sticky top-32 space-y-16">
-            <div className="space-y-10">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-300 dark:text-zinc-700 border-b border-zinc-100 dark:border-zinc-900 pb-6">
-                Recommended
-              </h4>
-              <div className="space-y-10">
-                {BLOG_POSTS.filter(p => p.slug !== slug).slice(0, 3).map((item) => (
-                  <Link to={`/article/${item.slug}`} key={item.slug} className="group flex gap-5 items-start">
-                    <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden shrink-0 shadow-sm border border-zinc-200 dark:border-zinc-800">
-                      <img src={item.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Thumb" />
-                    </div>
-                    <div className="space-y-1 text-zinc-900 dark:text-white">
-                      <h5 className="text-sm font-bold leading-tight group-hover:text-pink-500 transition-colors line-clamp-2">{item.title} {item.titleAccent}</h5>
-                      <p className="text-[9px] font-black uppercase text-zinc-400 tracking-widest">{item.category}</p>
-                    </div>
-                  </Link>
-                ))}
+        {/* SIDEBAR */}
+     <aside className="lg:col-span-4">
+  <div className="lg:sticky lg:top-32 space-y-12">
+    
+    {/* --- SECTION: RECOMMENDED --- */}
+    <div className="space-y-8">
+      {/* Header dengan Judul & Keterangan Singkat */}
+      <div className="space-y-2 border-b border-zinc-100 dark:border-zinc-900 pb-6">
+        <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 dark:text-white">
+          Recommended Reading
+        </h4>
+        <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">
+          Curated stories you might have missed
+        </p>
+      </div>
+
+      {/* List Item */}
+      <div className="space-y-10">
+        {recommendedPosts.map((item) => (
+          <Link 
+            to={`/article/${item.slug}`} 
+            key={item.slug} 
+            className="group flex gap-5 items-start"
+          >
+            {/* Thumbnail */}
+            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden shrink-0 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+              <img 
+                src={item.image} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                alt={item.title} 
+              />
+            </div>
+            
+            {/* Text Container - Menambahkan flex-1 agar teks bisa mengambil sisa ruang */}
+            <div className="flex-1 space-y-2">
+              <p className="text-[9px] font-black uppercase text-pink-500 tracking-[0.15em]">
+                {item.category}
+              </p>
+
+              {/* Judul: Dipastikan muncul sepenuhnya tanpa line-clamp */}
+              <h5 className="text-sm md:text-base font-bold leading-tight text-zinc-900 dark:text-white group-hover:text-pink-500 transition-colors uppercase tracking-tight">
+                {item.title}
+              </h5>
+
+              {/* Keterangan/Excerpt */}
+              {item.excerpt && (
+                <p className="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                  {item.excerpt}
+                </p>
+              )}
+
+              {/* Metadata */}
+              <div className="flex items-center gap-2 pt-1">
+                <div className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                  {item.readTime || '5 min read'}
+                </p>
               </div>
             </div>
+          </Link>
+        ))}
+      </div>
+    </div>
 
-            <div className="p-8 rounded-[2.5rem] bg-zinc-950 text-white relative overflow-hidden shadow-2xl">
-                <Zap className="absolute -right-4 -top-4 w-24 h-24 text-zinc-900 opacity-50 rotate-12" />
-                <h4 className="text-lg font-black uppercase italic tracking-tighter mb-2 relative z-10">Newsletter</h4>
-                <p className="text-xs text-zinc-400 mb-6 leading-relaxed relative z-10">Dapatkan berita eksklusif Popverse langsung di inbox kamu setiap pekan.</p>
-                <div className="flex flex-col gap-3 relative z-10">
-                   <input type="text" placeholder="Email Address" className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500 transition-colors text-white" />
-                   <button className="w-full bg-white text-zinc-950 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">Join The Tribe</button>
-                </div>
-            </div>
+    {/* --- SECTION: NEWSLETTER --- */}
+    <div className="relative p-8 rounded-[2.5rem] bg-zinc-950 text-white overflow-hidden group border border-white/5 shadow-2xl">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-[80px] rounded-full" />
+      
+      <div className="relative z-10 space-y-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-pink-500">
+            <Zap size={14} fill="currentColor" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Stay Updated</span>
           </div>
-        </aside>
-      </main>
-
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
-        <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-6 py-4 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-          <button className="flex items-center gap-2 group active:scale-95 transition-transform">
-            <Heart size={20} className="text-zinc-400 group-active:text-pink-500 transition-colors" />
-            <span className="text-[10px] font-black uppercase">1.2k</span>
-          </button>
-          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button className="flex items-center gap-2 active:scale-95 transition-transform">
-            <MessageCircle size={20} className="text-zinc-400" />
-            <span className="text-[10px] font-black uppercase">84</span>
-          </button>
-          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button className="active:scale-95 transition-transform"><Bookmark size={20} className="text-zinc-400" /></button>
-          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
-          <button onClick={handleNativeShare} className="active:scale-95 transition-transform">
-            <Share2 size={20} className="text-zinc-400" />
+          <h4 className="text-2xl font-black uppercase tracking-tighter leading-none">
+            Weekly <br /> Newsletter
+          </h4>
+          <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+            Dapatkan berita pilihan dari Timika Pulse langsung di email Anda setiap Senin pagi.
+          </p>
+        </div>
+        
+        <div className="space-y-3">
+          <input 
+            type="email" 
+            placeholder="Email Address" 
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-xs focus:outline-none focus:border-pink-500 transition-colors text-white placeholder:text-zinc-600" 
+          />
+          <button className="w-full bg-white text-zinc-950 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 hover:text-white transition-all active:scale-[0.98]">
+            Join The Tribe
           </button>
         </div>
       </div>
+    </div>
 
-      <footer className="py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 pb-32 lg:pb-24">
-        <div className="flex flex-col items-center gap-12">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex flex-col items-center gap-4">
-            <div className="p-4 rounded-full border border-zinc-200 dark:border-zinc-800 group-hover:border-pink-500 group-hover:-translate-y-2 transition-all shadow-sm">
-              <ArrowLeft className="rotate-90 text-zinc-400 group-hover:text-pink-500" size={24} />
+  </div>
+</aside>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="relative py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-pink-500/20 to-transparent" />
+
+        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-16">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+            className="group flex flex-col items-center gap-4 transition-all"
+          >
+            <div className="relative p-5 rounded-full border border-zinc-200 dark:border-zinc-800 group-hover:border-pink-500 group-hover:bg-pink-500/5 transition-all duration-500 shadow-sm group-active:scale-90">
+              <ArrowLeft className="rotate-90 text-zinc-400 group-hover:text-pink-500 transition-colors" size={20} />
+              <span className="absolute inset-0 rounded-full bg-pink-500/20 animate-ping opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">Top of Page</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+              Back to Top
+            </span>
           </button>
-          <div className="space-y-6 text-zinc-900 dark:text-white">
-            <h2 className="text-3xl font-black tracking-[0.4em] uppercase opacity-10">Popverse</h2>
-            <div className="flex gap-8 justify-center text-[9px] font-black uppercase tracking-widest text-zinc-400">
-               <a href="#" className="hover:text-pink-500 transition-colors">Privacy</a>
-               <a href="#" className="hover:text-pink-500 transition-colors">Terms</a>
-               <a href="#" className="hover:text-pink-500 transition-colors">Copyright 2026</a>
+
+          <div className="w-full space-y-10">
+            <div className="relative inline-block">
+              <h2 className="text-5xl md:text-7xl font-black tracking-[0.3em] uppercase opacity-[0.03] dark:opacity-[0.05] italic select-none">Popverse</h2>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="text-xl md:text-2xl font-black tracking-[0.4em] uppercase text-zinc-900 dark:text-white italic">Popverse</h2>
+              </div>
+            </div>
+
+            <nav className="flex flex-wrap gap-x-10 gap-y-4 justify-center items-center">
+              {['Privacy Policy', 'Terms of Service', 'Advertising', 'About'].map((item) => (
+                <a key={item} href="#" className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors relative group">
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-pink-500 transition-all group-hover:w-full" />
+                </a>
+              ))}
+            </nav>
+
+            <div className="pt-10 border-t border-zinc-50 dark:border-zinc-900/50">
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">
+                © 2026 <span className="text-zinc-900 dark:text-white">Popverse Media Group</span>. 
+                <span className="mx-2 opacity-30">|</span> 
+                Made with Passion in Timika
+              </p>
             </div>
           </div>
         </div>
       </footer>
 
       <style>{`
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .article-content p { margin-bottom: 1.5rem; line-height: 1.8; }
         .prose blockquote p::before, .prose blockquote p::after { content: none; }
-        .prose h3 { margin-top: 2.5rem; margin-bottom: 1.25rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.05em; font-size: 1.875rem; }
-        iframe { transform: translateZ(0); -webkit-transform: translateZ(0); will-change: transform; background-color: transparent !important; }
-        .prose { -webkit-overflow-scrolling: touch; transition: font-size 0.3s ease, font-family 0.3s ease; }
+        .prose h2 { font-size: 1.8em; font-weight: 900; margin-top: 2.5rem; margin-bottom: 1.5rem; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; }
+        .prose { transition: font-size 0.3s ease, font-family 0.3s ease; }
       `}</style>
     </div>
   )
