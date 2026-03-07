@@ -8,7 +8,7 @@ import NewsCarousel from "../components/NewsCarousel";
 import { BLOG_POSTS, type Post } from "../data/posts";
 
 // PERBAIKAN: Ambil data lokal saja dari timikaPulse (tanpa tipe Post di sini)
-import { TIMIKA_PULSE_POSTS } from '../data/timikaPulse';
+import { TIMIKA_PULSE_POSTS } from '../data/tim_posts';
 
 import { 
   ArrowRight, ArrowLeft, Sparkles, MapPin, 

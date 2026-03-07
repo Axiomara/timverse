@@ -1,23 +1,27 @@
+// src/pages/ArticleDetail.tsx
 import { useState, useEffect, useMemo } from "react"
 import { useParams, Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { BLOG_POSTS } from "../data/posts"
-import { TIMIKA_PULSE_POSTS } from '../data/timikaPulse'
+import { TIMIKA_PULSE_POSTS } from '../data/tim_posts'
 import NotFound from "./NotFound"
 import { 
   ArrowLeft, Bookmark, Share2, Clock, Calendar, 
-  Zap, Hash, Check, ArrowRight,
+  Zap, Check, ArrowRight,
   Type, CaseUpper, CaseLower, ExternalLink
 } from "lucide-react"
+import AudioNewsPlayer from "../components/AudioNewsPlayer";
 
-// --- GABUNGKAN DATA GLOBAL ---
+// GABUNGKAN DATA GLOBAL
 const ALL_AVAILABLE_POSTS = [...BLOG_POSTS, ...TIMIKA_PULSE_POSTS];
 
-// --- SUB-KOMPONEN RELATED POSTS ---
+// SUB-KOMPONEN RELATED POSTS (Disederhanakan)
 function RelatedPosts({ currentCategory, currentSlug }: { currentCategory: string, currentSlug: string }) {
-  const related = ALL_AVAILABLE_POSTS.filter(
-    (post) => post.category === currentCategory && post.slug !== currentSlug
-  ).slice(0, 3);
+  const related = useMemo(() => {
+    return ALL_AVAILABLE_POSTS.filter(
+      (post) => post.category === currentCategory && post.slug !== currentSlug
+    ).slice(0, 3);
+  }, [currentCategory, currentSlug]);
 
   if (related.length === 0) return null;
 
@@ -66,12 +70,13 @@ export default function ArticleDetail() {
 
   const post = ALL_AVAILABLE_POSTS.find((p) => p.slug === slug)
 
+  // Rekomendasi Sidebar
   const recommendedPosts = useMemo(() => {
     if (!post) return [];
     return ALL_AVAILABLE_POSTS
       .filter((p) => p.slug !== post.slug)
       .map((p) => {
-        const sharedTags = p.tags.filter(tag => post.tags.includes(tag)).length;
+        const sharedTags = p.tags?.filter(tag => post.tags.includes(tag)).length || 0;
         const categoryBonus = p.category === post.category ? 2 : 0;
         return { ...p, score: sharedTags + categoryBonus };
       })
@@ -133,7 +138,7 @@ export default function ArticleDetail() {
           <h1 className="text-4xl md:text-[90px] font-black leading-[1.1] md:leading-[0.95] tracking-tighter uppercase italic text-zinc-900 dark:text-white">
             {post.title} <br />
             <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent not-italic block md:inline">
-              {post.titleAccent}
+              {post.titleAccent || "HAPPENING NOW"}
             </span>
           </h1>
 
@@ -170,19 +175,27 @@ export default function ArticleDetail() {
       <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-24 pb-20">
         <article className="lg:col-span-8">
           
-          {/* READING MODE CONTROLS */}
-          <div className="flex items-center gap-3 md:gap-4 mb-12 p-3 md:p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 w-full sm:w-fit overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-2 pr-4 border-r border-zinc-200 dark:border-zinc-800 shrink-0">
-              <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseLower size={18}/></button>
-              <span className="text-[10px] font-black w-10 text-center text-zinc-400">{fontSize}px</span>
-              <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseUpper size={18}/></button>
+          {/* AUDIO PLAYER & READING MODE CONTROLS */}
+          <div className="space-y-6 mb-12">
+            {/* Audio Player di sini agar terlihat pertama kali sebelum membaca */}
+            <AudioNewsPlayer 
+                text={post.excerpt + " " + post.content.replace(/<[^>]*>/g, '')} 
+                title={post.title} 
+            />
+
+            <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 w-full sm:w-fit overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-2 pr-4 border-r border-zinc-200 dark:border-zinc-800 shrink-0">
+                <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseLower size={18}/></button>
+                <span className="text-[10px] font-black w-10 text-center text-zinc-400">{fontSize}px</span>
+                <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-white dark:hover:bg-zinc-800 rounded-lg text-zinc-500"><CaseUpper size={18}/></button>
+                </div>
+                <button 
+                onClick={() => setIsSerif(!isSerif)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${isSerif ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}
+                >
+                <Type size={14} /> {isSerif ? 'Serif Mode' : 'Sans Mode'}
+                </button>
             </div>
-            <button 
-              onClick={() => setIsSerif(!isSerif)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${isSerif ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}
-            >
-              <Type size={14} /> {isSerif ? 'Serif Mode' : 'Sans Mode'}
-            </button>
           </div>
 
           <div 
@@ -195,9 +208,9 @@ export default function ArticleDetail() {
                 <Zap size={14} fill="currentColor" /> Quick Summary
               </h4>
               <ul className="space-y-4">
-                {["Laporan mendalam khas Popverse.", "Informasi resmi dari narasumber terpercaya.", "Dampak signifikan bagi industri lokal."].map((text, i) => (
+                {post.summary?.map((item, i) => (
                   <li key={i} className="flex gap-4 text-sm font-medium">
-                    <span className="text-pink-500 font-black">0{i+1}</span> {text}
+                    <span className="text-pink-500 font-black">0{i+1}</span> {item}
                   </li>
                 ))}
               </ul>
@@ -240,146 +253,66 @@ export default function ArticleDetail() {
         </article>
 
         {/* SIDEBAR */}
-     <aside className="lg:col-span-4">
-  <div className="lg:sticky lg:top-32 space-y-12">
-    
-    {/* --- SECTION: RECOMMENDED --- */}
-    <div className="space-y-8">
-      {/* Header dengan Judul & Keterangan Singkat */}
-      <div className="space-y-2 border-b border-zinc-100 dark:border-zinc-900 pb-6">
-        <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 dark:text-white">
-          Recommended Reading
-        </h4>
-        <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">
-          Curated stories you might have missed
-        </p>
-      </div>
+        <aside className="lg:col-span-4">
+            <div className="lg:sticky lg:top-32 space-y-12">
+                <div className="space-y-8">
+                <div className="space-y-2 border-b border-zinc-100 dark:border-zinc-900 pb-6">
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 dark:text-white">Recommended Reading</h4>
+                    <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">Curated stories for you</p>
+                </div>
 
-      {/* List Item */}
-      <div className="space-y-10">
-        {recommendedPosts.map((item) => (
-          <Link 
-            to={`/article/${item.slug}`} 
-            key={item.slug} 
-            className="group flex gap-5 items-start"
-          >
-            {/* Thumbnail */}
-            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden shrink-0 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
-              <img 
-                src={item.image} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                alt={item.title} 
-              />
+                <div className="space-y-10">
+                    {recommendedPosts.map((item) => (
+                    <Link to={`/article/${item.slug}`} key={item.slug} className="group flex gap-5 items-start">
+                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden shrink-0 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+                        <img src={item.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={item.title} />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                        <p className="text-[9px] font-black uppercase text-pink-500 tracking-[0.15em]">{item.category}</p>
+                        <h5 className="text-sm md:text-base font-bold leading-tight text-zinc-900 dark:text-white group-hover:text-pink-500 transition-colors uppercase tracking-tight line-clamp-2">{item.title}</h5>
+                        <div className="flex items-center gap-2 pt-1">
+                            <div className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                            <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{item.readTime}</p>
+                        </div>
+                        </div>
+                    </Link>
+                    ))}
+                </div>
+                </div>
+
+                {/* NEWSLETTER */}
+                <div className="relative p-8 rounded-[2.5rem] bg-zinc-950 text-white overflow-hidden group border border-white/5 shadow-2xl">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-[80px] rounded-full" />
+                    <div className="relative z-10 space-y-6">
+                        <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-pink-500">
+                            <Zap size={14} fill="currentColor" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Stay Updated</span>
+                        </div>
+                        <h4 className="text-2xl font-black uppercase tracking-tighter leading-none">Weekly <br /> Newsletter</h4>
+                        <p className="text-xs text-zinc-400 leading-relaxed font-medium">Berita pilihan Timika Pulse langsung ke email Anda.</p>
+                        </div>
+                        <div className="space-y-3">
+                        <input type="email" placeholder="Email Address" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-xs focus:outline-none focus:border-pink-500 text-white placeholder:text-zinc-600" />
+                        <button className="w-full bg-white text-zinc-950 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 hover:text-white transition-all active:scale-[0.98]">Join The Tribe</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            {/* Text Container - Menambahkan flex-1 agar teks bisa mengambil sisa ruang */}
-            <div className="flex-1 space-y-2">
-              <p className="text-[9px] font-black uppercase text-pink-500 tracking-[0.15em]">
-                {item.category}
-              </p>
-
-              {/* Judul: Dipastikan muncul sepenuhnya tanpa line-clamp */}
-              <h5 className="text-sm md:text-base font-bold leading-tight text-zinc-900 dark:text-white group-hover:text-pink-500 transition-colors uppercase tracking-tight">
-                {item.title}
-              </h5>
-
-              {/* Keterangan/Excerpt */}
-              {item.excerpt && (
-                <p className="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400 line-clamp-2">
-                  {item.excerpt}
-                </p>
-              )}
-
-              {/* Metadata */}
-              <div className="flex items-center gap-2 pt-1">
-                <div className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
-                  {item.readTime || '5 min read'}
-                </p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-
-    {/* --- SECTION: NEWSLETTER --- */}
-    <div className="relative p-8 rounded-[2.5rem] bg-zinc-950 text-white overflow-hidden group border border-white/5 shadow-2xl">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-[80px] rounded-full" />
-      
-      <div className="relative z-10 space-y-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-pink-500">
-            <Zap size={14} fill="currentColor" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Stay Updated</span>
-          </div>
-          <h4 className="text-2xl font-black uppercase tracking-tighter leading-none">
-            Weekly <br /> Newsletter
-          </h4>
-          <p className="text-xs text-zinc-400 leading-relaxed font-medium">
-            Dapatkan berita pilihan dari Timika Pulse langsung di email Anda setiap Senin pagi.
-          </p>
-        </div>
-        
-        <div className="space-y-3">
-          <input 
-            type="email" 
-            placeholder="Email Address" 
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 text-xs focus:outline-none focus:border-pink-500 transition-colors text-white placeholder:text-zinc-600" 
-          />
-          <button className="w-full bg-white text-zinc-950 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-pink-500 hover:text-white transition-all active:scale-[0.98]">
-            Join The Tribe
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</aside>
+        </aside>
       </main>
 
       {/* FOOTER */}
-      <footer className="relative py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-pink-500/20 to-transparent" />
-
+      <footer className="relative py-24 text-center border-t border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950">
         <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-16">
-          <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-            className="group flex flex-col items-center gap-4 transition-all"
-          >
-            <div className="relative p-5 rounded-full border border-zinc-200 dark:border-zinc-800 group-hover:border-pink-500 group-hover:bg-pink-500/5 transition-all duration-500 shadow-sm group-active:scale-90">
-              <ArrowLeft className="rotate-90 text-zinc-400 group-hover:text-pink-500 transition-colors" size={20} />
-              <span className="absolute inset-0 rounded-full bg-pink-500/20 animate-ping opacity-0 group-hover:opacity-100 transition-opacity" />
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex flex-col items-center gap-4 transition-all">
+            <div className="p-5 rounded-full border border-zinc-200 dark:border-zinc-800 group-hover:border-pink-500 transition-all duration-500">
+              <ArrowLeft className="rotate-90 text-zinc-400 group-hover:text-pink-500" size={20} />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
-              Back to Top
-            </span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">Back to Top</span>
           </button>
-
-          <div className="w-full space-y-10">
-            <div className="relative inline-block">
-              <h2 className="text-5xl md:text-7xl font-black tracking-[0.3em] uppercase opacity-[0.03] dark:opacity-[0.05] italic select-none">Popverse</h2>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-xl md:text-2xl font-black tracking-[0.4em] uppercase text-zinc-900 dark:text-white italic">Popverse</h2>
-              </div>
-            </div>
-
-            <nav className="flex flex-wrap gap-x-10 gap-y-4 justify-center items-center">
-              {['Privacy Policy', 'Terms of Service', 'Advertising', 'About'].map((item) => (
-                <a key={item} href="#" className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors relative group">
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-pink-500 transition-all group-hover:w-full" />
-                </a>
-              ))}
-            </nav>
-
-            <div className="pt-10 border-t border-zinc-50 dark:border-zinc-900/50">
-              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                © 2026 <span className="text-zinc-900 dark:text-white">Popverse Media Group</span>. 
-                <span className="mx-2 opacity-30">|</span> 
-                Made with Passion in Timika
-              </p>
-            </div>
+          <div className="pt-10 border-t border-zinc-50 dark:border-zinc-900/50 w-full">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">© 2026 Popverse Media Group. Made in Timika</p>
           </div>
         </div>
       </footer>
@@ -388,9 +321,7 @@ export default function ArticleDetail() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .article-content p { margin-bottom: 1.5rem; line-height: 1.8; }
-        .prose blockquote p::before, .prose blockquote p::after { content: none; }
         .prose h2 { font-size: 1.8em; font-weight: 900; margin-top: 2.5rem; margin-bottom: 1.5rem; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; }
-        .prose { transition: font-size 0.3s ease, font-family 0.3s ease; }
       `}</style>
     </div>
   )
