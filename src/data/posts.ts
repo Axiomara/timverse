@@ -13,6 +13,9 @@ export interface Post {
   content: string;
   tags: string[]; 
   source?: string;
+  summary?: string[];
+
+  sourceUrl?: string;
 }
 
 export const BLOG_POSTS: Post[] = [
