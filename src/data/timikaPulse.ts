@@ -14,7 +14,7 @@ export const TIMIKA_PULSE_POSTS: Post[] = [
     readTime: "6 Min",
     image: "https://voffice.co.id/jakarta-virtual-office/business-tips/wp-content/uploads/2021/04/bandara-timika-mozes-kilangin.jpg",
     tags: ["Timika", "Infrastruktur", "Bandara", "Papua Tengah", "Transportasi"],
-    source: "Dishub Mimika",
+    sourceUrl: "Dishub Mimika",
     excerpt: "Proyek perluasan terminal penumpang Bandara Mozes Kilangin kini memasuki fase finishing dekorasi interior berbasis budaya lokal.",
     content: `
       <p>Wajah transportasi udara di Mimika sedang bersiap untuk transformasi besar. Pembangunan gedung terminal baru di <strong>Bandara Mozes Kilangin</strong> kini telah mencapai progres 92% per Februari 2026.</p>
