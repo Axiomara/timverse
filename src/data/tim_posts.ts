@@ -2,104 +2,118 @@
 import { type Post } from "./posts"; 
 
 export const TIMIKA_PULSE_POSTS: Post[] = [
-  {
-    slug: "update-pembangunan-bandara-mozes-kilangin-2026",
-    category: "Infrastruktur",
-    title: "Bandara Mozes Kilangin:",
-    titleAccent: "Menuju Gerbang Internasional",
-    author: "Admin Timika",
-    date: "Feb 24, 2026",
-    readTime: "6 Min",
-    image: "https://voffice.co.id/jakarta-virtual-office/business-tips/wp-content/uploads/2021/04/bandara-timika-mozes-kilangin.jpg",
-    tags: ["Timika", "Infrastruktur", "Bandara", "Papua Tengah", "Transportasi"],
-    source: "Dishub Mimika",
-    sourceUrl: "https://mimikakab.go.id",
-    excerpt: "Proyek perluasan terminal penumpang Bandara Mozes Kilangin kini memasuki fase finishing dekorasi interior berbasis budaya lokal.",
-    summary: [
-      "Progres pembangunan terminal baru telah mencapai 92% per Februari 2026.",
-      "Desain interior mengintegrasikan ukiran khas suku Amungme dan Kamoro.",
-      "Kapasitas meningkat menjadi 1,5 juta penumpang/tahun guna menekan harga tiket."
-    ],
-    content: `
-      <p>Wajah transportasi udara di Kabupaten Mimika sedang bersiap untuk transformasi besar. Pembangunan gedung terminal baru di <strong>Bandara Mozes Kilangin</strong> sisi selatan kini telah mencapai progres signifikan sebesar 92% per Februari 2026. Proyek ini diproyeksikan menjadi hub transportasi utama di Provinsi Papua Tengah.</p>
-      
-      <div class="my-12 p-8 bg-zinc-50 dark:bg-zinc-900/50 rounded-[2rem] border-l-4 border-pink-500 italic text-lg text-zinc-700 dark:text-zinc-300 shadow-sm">
-        "Terminal ini bukan sekadar bangunan beton, tapi representasi identitas suku Amungme dan Kamoro yang menyambut dunia di tanah Papua. Kami ingin setiap penumpang merasakan jiwa Timika sejak mereka turun dari pesawat."
-      </div>
+// Tambahkan ini ke dalam array TIMIKA_PULSE_POSTS di src/data/timikaPulse.ts
 
-      <h3>Sentuhan Ornamen Budaya dan Modernitas</h3>
-      <p>Salah satu aspek paling mencolok dari terminal ini adalah integrasi arsitektur modern dengan nilai kearifan lokal. Pilar-pilar utama di ruang tunggu keberangkatan kini sedang dipasangi ukiran kayu asli yang dikerjakan oleh seniman lokal dari pesisir Mimika. Selain estetika, gedung ini dirancang sebagai 'Green Airport' dengan sistem pencahayaan alami yang maksimal untuk menekan konsumsi energi.</p>
-      
-      <h3>Peningkatan Fasilitas dan Kapasitas</h3>
-      <p>Dengan luas bangunan yang berlipat ganda, bandara ini diprediksi mampu menampung hingga 1,5 juta penumpang per tahun. Pemerintah daerah melalui Dinas Perhubungan menyatakan bahwa fasilitas <i>garbarata</i> (avibridge) tambahan sedang dalam proses kalibrasi. Penambahan kapasitas ini diharapkan dapat menarik minat maskapai internasional untuk membuka rute langsung, yang pada akhirnya akan menciptakan persaingan sehat dan menurunkan harga tiket pesawat yang selama ini dikeluhkan masyarakat.</p>
-
-      <h3>Dampak Ekonomi bagi UMKM</h3>
-      <p>Tidak hanya fokus pada penerbangan, otoritas bandara juga menyediakan zona komersial khusus bagi UMKM lokal. Produk unggulan seperti kopi Amungme, sarang semut, dan kerajinan noken akan mendapatkan tempat premium di area keberangkatan, memberikan peluang ekonomi langsung bagi warga asli Papua di sekitar bandara.</p>
-    `
-  },
   {
-    slug: "festival-budaya-amungme-kamoro-2026",
-    category: "Culture",
-    title: "Festival Amungme & Kamoro:",
-    titleAccent: "Rayakan Akar Budaya",
-    author: "Lukas Kogoya",
-    date: "Feb 22, 2026",
+    slug: "pembangunan-sport-center-mimika-tahap-dua",
+    category: "Sports",
+    title: "Mimika Sport Complex:",
+    titleAccent: "Pusat Atlet Masa Depan",
+    author: "Rizky Pratama",
+    date: "Feb 18, 2026",
     readTime: "5 Min",
-    image: "https://koranpapua.id/wp-content/uploads/2023/10/Festival-Budaya-Amungme-Kamoro-2.jpg",
-    tags: ["Budaya", "Festival", "Timika", "Papua", "Seni"],
-    source: "Koran Papua",
-    sourceUrl: "https://koranpapua.id",
-    excerpt: "Ribuan masyarakat berkumpul di Lapangan Pasar Lama untuk menyaksikan pertunjukan tari kolosal dan pameran ukiran kayu warisan leluhur.",
+    image: "https://infopublik.id/assets/upload/headline/IMG-20211005-WA0053.jpg",
+    tags: ["Olahraga", "Timika", "Atlet", "Papua Tengah", "Fasilitas"],
+    source: "Kemenpora RI",
+    sourceUrl: "https://kemenpora.go.id",
+    excerpt: "Fasilitas olahraga kelas dunia di Timika kini dibuka untuk pelatihan atlet lokal guna mempersiapkan talenta muda Papua menuju kancah nasional.",
     summary: [
-      "Festival dibuka dengan parade perahu hias dan tarian kolosal di pusat kota.",
-      "Pameran ukiran kayu Wemawe menarik perhatian kolektor seni internasional.",
-      "Bupati Mimika mendorong pelestarian bahasa ibu bagi generasi muda Timika."
+      "Stadion atletik dan indoor dilingkungan Mimika Sport Complex mulai dibuka untuk umum.",
+      "Program beasiswa atlet muda asli Mimika diluncurkan oleh KONI daerah.",
+      "Rencana tuan rumah kejuaraan atletik se-Tanah Papua pada pertengahan 2026."
     ],
     content: `
-      <p>Kabupaten Mimika kembali bergetar dengan suara tifa dan nyanyian adat. Festival tahunan <strong>Amungme & Kamoro 2026</strong> resmi dibuka pagi ini dengan kemegahan yang luar biasa. Acara dimulai dengan parade 50 perahu hias di wilayah pesisir Poumako dan dilanjutkan dengan tarian perang kolosal yang melibatkan lebih dari 500 pemuda di pusat kota Timika.</p>
+      <p>Pasca perhelatan besar beberapa tahun lalu, <strong>Mimika Sport Complex (MSC)</strong> tidak dibiarkan menjadi 'gajah putih'. Pemerintah Kabupaten Mimika bersama PT Freeport Indonesia memastikan fasilitas ini tetap hidup sebagai kawah candradimuka bagi atlet-atlet berbakat dari bumi Cenderawasih.</p>
       
-      <div class="my-10 overflow-hidden rounded-[2rem] border border-zinc-100 dark:border-zinc-800">
-        <img src="https://koranpapua.id/wp-content/uploads/2023/10/Festival-Budaya-Amungme-Kamoro-2.jpg" alt="Festival Culture" class="w-full h-auto" />
-        <p class="p-4 text-xs italic text-center text-zinc-500">Suasana parade budaya di Lapangan Pasar Lama Timika.</p>
-      </div>
+      <h3>Fasilitas Standar Internasional</h3>
+      <p>Dengan lintasan lari sintetis standar IAAF dan gedung basket indoor yang megah, MSC kini menjadi magnet bagi pemuda Timika. "Kami ingin fasilitas ini melahirkan Boaz Solossa baru atau Franklin Burumi baru di bidang atletik," ujar kepala pengelola MSC. Perawatan rutin dilakukan secara ketat untuk menjaga kualitas rumput dan tribun penonton.</p>
 
-      <h3>Mahakarya Ukiran Wemawe</h3>
-      <p>Tahun ini, perhatian utama tertuju pada paviliun ukiran kayu <i>Wemawe</i> khas suku Kamoro. Ukiran-ukiran setinggi tiga meter yang melambangkan penghormatan kepada arwah leluhur dipamerkan di tengah lapangan. Laporan menyebutkan bahwa beberapa kolektor seni dari Eropa dan Australia hadir secara khusus untuk mempelajari filosofi di balik pola rumit yang dipahat menggunakan alat tradisional.</p>
-      
-      <h3>Dialog Antar Generasi</h3>
-      <p>Selain pameran fisik, festival ini juga mengadakan lokakarya bahasa daerah. Bupati Mimika dalam pidato pembukaannya menekankan kekhawatiran akan pergeseran budaya. Beliau menegaskan bahwa kemajuan ekonomi Timika sebagai kota tambang tidak boleh menyingkirkan identitas asli. Generasi muda didorong untuk bangga menggunakan noken dan berkomunikasi dengan bahasa ibu dalam keseharian mereka.</p>
-      
-      <p>Festival ini rencananya akan berlangsung selama lima hari ke depan, ditutup dengan ritual bakar batu masal sebagai simbol persaudaraan antar suku yang mendiami tanah Mimika.</p>
+      <h3>Program Pembinaan Usia Dini</h3>
+      <p>Mulai Maret 2026, KONI Mimika akan menginisiasi akademi olahraga terpadu. Siswa-siswi SMP dan SMA di wilayah Mimika akan mendapatkan akses latihan gratis dua kali seminggu di bawah pengawasan pelatih profesional. Langkah ini diambil untuk memastikan regenerasi atlet Papua tidak terputus.</p>
     `
   },
   {
-    slug: "stabilitas-ekonomi-pasar-sentral-timika",
-    category: "Economy",
-    title: "Ekonomi Lokal Timika:",
-    titleAccent: "Harga Pangan Stabil",
-    author: "Sarah Wijaya",
-    date: "Feb 20, 2026",
-    readTime: "4 Min",
-    image: "https://fokuspapua.com/wp-content/uploads/2021/10/Pasar-Sentral-Timika.jpg",
-    tags: ["Ekonomi", "Pasar", "Timika", "UMKM", "Papua Tengah"],
-    source: "Fokus Papua",
-    sourceUrl: "https://fokuspapua.com",
-    excerpt: "Pantauan harga di Pasar Sentral Timika menunjukkan tren stabil pada komoditas pokok meskipun permintaan meningkat menjelang akhir bulan.",
+    slug: "konservasi-hutan-manggrove-poumako",
+    category: "Environment",
+    title: "Hutan Mangrove Poumako:",
+    titleAccent: "Paru-Paru Pesisir Mimika",
+    author: "Dewi Lestari",
+    date: "Feb 15, 2026",
+    readTime: "7 Min",
+    image: "https://images.unsplash.com/photo-1584564760451-39a1638300d2?auto=format&fit=crop&q=80",
+    tags: ["Lingkungan", "Konservasi", "Mangrove", "Poumako", "Ekosistem"],
+    source: "DLH Mimika",
+    sourceUrl: "https://mimikakab.go.id",
+    excerpt: "Aksi penanaman 10.000 bibit mangrove di kawasan Poumako menjadi langkah krusial melawan abrasi dan menjaga ekosistem kepiting karaka.",
     summary: [
-      "Harga komoditas pokok (beras, minyak, ayam) di Pasar Sentral terpantau stabil.",
-      "Suplai sayur dari petani lokal SP 2 dan SP 3 mengurangi ketergantungan logistik laut.",
-      "Rencana implementasi QRIS untuk percepatan ekonomi digital di pasar tradisional."
+      "Rehabilitasi lahan pesisir seluas 20 hektar di wilayah pelabuhan Poumako.",
+      "Melibatkan komunitas pecinta alam dan pelajar se-Kabupaten Mimika.",
+      "Mangrove sebagai benteng alami untuk menjaga populasi biota laut lokal."
     ],
     content: `
-      <p>Menjelang akhir Februari 2026, kondisi ekonomi di tingkat akar rumput Kabupaten Mimika menunjukkan sinyal positif. Dinas Perindustrian dan Perdagangan (Disperindag) melaporkan bahwa indeks harga konsumen untuk bahan pokok di <strong>Pasar Sentral Timika</strong> berada dalam kategori sangat stabil. Komoditas strategis seperti beras premium, minyak goreng, dan telur ayam tidak mengalami lonjakan meski mobilitas warga meningkat.</p>
+      <p>Kawasan pesisir Poumako kini mendapatkan perhatian serius. Sebagai gerbang logistik laut, aktivitas pelabuhan yang tinggi memberikan tekanan pada ekosistem lokal. Untuk mengimbanginya, Dinas Lingkungan Hidup (DLH) meluncurkan program <strong>Green Poumako 2026</strong>.</p>
       
-      <h3>Ketahanan Pangan dari Pinggiran Kota</h3>
-      <p>Kunci dari stabilitas harga ini ternyata terletak pada penguatan sektor agraris lokal. Suplai sayur-mayur, cabai, dan tomat kini 80% berasal dari petani lokal di wilayah transmigrasi SP 2, SP 3, dan SP 5. Hal ini merupakan keberhasilan besar mengingat beberapa tahun lalu Timika sangat bergantung pada pasokan logistik via kapal laut dari Makassar atau Merauke yang harganya fluktuatif tergantung cuaca.</p>
-      
-      <h3>Modernisasi Transaksi: Menuju Digitalisasi</h3>
-      <p>Selain stok barang, cara bertransaksi di Pasar Sentral juga mulai berubah. Pemerintah daerah bekerja sama dengan Bank Indonesia mulai menggalakkan penggunaan <strong>QRIS</strong> bagi para pedagang mama-mama Papua. "Kami ingin pedagang kecil juga merasakan keamanan transaksi digital. Tidak perlu pusing mencari uang kembalian dan catatan keuangan jadi lebih rapi," ujar salah satu staf Disperindag.</p>
+      <h3>Menjaga Habitat Kepiting Karaka</h3>
+      <p>Kepiting Karaka merupakan komoditas ekspor unggulan Timika. Tanpa hutan mangrove yang sehat, populasi karaka akan drastis menurun. Penanaman bibit mangrove jenis <i>Rhizophora</i> dilakukan di area-area yang mulai mengalami pengikisan tanah. "Jika hutan bakau rusak, maka ekonomi nelayan lokal juga akan hancur," tegas koordinator aksi.</p>
 
-      <p>Diharapkan dengan stabilitas harga dan kemudahan transaksi ini, daya beli masyarakat Timika tetap terjaga di tengah tantangan ekonomi global yang dinamis.</p>
+      <h3>Ekowisata Berbasis Komunitas</h3>
+      <p>Selain fungsi ekologis, pemerintah juga berencana membangun jembatan kayu (boardwalk) melintasi hutan mangrove untuk dijadikan destinasi wisata edukasi. Hal ini diharapkan dapat memberikan pendapatan tambahan bagi warga lokal tanpa merusak kelestarian alam.</p>
+    `
+  },
+  {
+    slug: "kuliner-kopi-amungme-naik-kelas",
+    category: "Culinary",
+    title: "Kopi Amungme Gold:",
+    titleAccent: "Aroma Pegunungan untuk Dunia",
+    author: "Beni Satria",
+    date: "Feb 12, 2026",
+    readTime: "4 Min",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80",
+    tags: ["Kuliner", "Kopi", "Amungme", "UMKM", "Ekspor"],
+    source: "Koperasi Amungme",
+    sourceUrl: "https://kopi-papua.com",
+    excerpt: "Biji kopi organik yang ditanam di ketinggian 2.000 mdpl pegunungan Mimika mulai menembus pasar kafe kelas atas di Jakarta dan Singapura.",
+    summary: [
+      "Peningkatan produksi kopi Arabika organik oleh petani Suku Amungme.",
+      "Proses pengolahan pasca-panen menggunakan teknologi semi-washed modern.",
+      "Cita rasa unik dengan notes cokelat dan rempah-rempah yang kuat."
+    ],
+    content: `
+      <p>Dari balik awan pegunungan Mimika, sebuah produk lokal sedang naik daun. <strong>Kopi Amungme Gold</strong>, yang ditanam tanpa pupuk kimia di ketinggian ekstrem, kini menjadi buruan para pecinta kopi spesialti (specialty coffee).</p>
+      
+      <h3>Keunikan Terroir Papua</h3>
+      <p>Tanah vulkanik dan udara dingin pegunungan memberikan profil rasa yang sulit ditemukan di tempat lain. Kopi ini memiliki tingkat keasaman yang rendah namun dengan body yang sangat tebal. Para barista di Jakarta menyebutnya sebagai 'Permata Hitam dari Timur'.</p>
+
+      <h3>Pemberdayaan Petani Lokal</h3>
+      <p>Seluruh keuntungan dari penjualan kopi ini dikembalikan untuk kesejahteraan petani Amungme di dataran tinggi. Koperasi lokal juga memberikan pelatihan teknik roasting agar nilai jual produk meningkat, tidak hanya sekadar menjual biji mentah (green beans).</p>
+    `
+  },
+  {
+    slug: "digitalisasi-pendidikan-sekolah-pedalaman-mimika",
+    category: "Technology",
+    title: "Internet Masuk Desa:",
+    titleAccent: "Pendidikan Digital di Pelosok",
+    author: "Andi Wijaya",
+    date: "Feb 10, 2026",
+    readTime: "6 Min",
+    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80",
+    tags: ["Teknologi", "Pendidikan", "Timika", "Internet", "Digital"],
+    source: "Diskominfo Mimika",
+    sourceUrl: "https://mimikakab.go.id",
+    excerpt: "Pemasangan satelit orbit rendah di sekolah-sekolah pedalaman Mimika kini memungkinkan siswa mengakses perpustakaan digital secara real-time.",
+    summary: [
+      "15 sekolah di wilayah pegunungan dan pesisir kini terhubung internet cepat.",
+      "Pembagian tablet edukasi untuk siswa kelas 6 SD dan 9 SMP.",
+      "Pelatihan literasi digital bagi guru-guru di wilayah terpencil."
+    ],
+    content: `
+      <p>Jarak bukan lagi penghalang untuk mendapatkan ilmu. Melalui program <strong>Mimika Pintar 2026</strong>, pemerintah daerah bekerja sama dengan penyedia layanan satelit global untuk menghadirkan koneksi internet di sekolah-sekolah yang sebelumnya terisolasi.</p>
+      
+      <h3>Akses Global untuk Anak Papua</h3>
+      <p>Kini, anak-anak di distrik terjauh bisa melakukan video call dengan mentor di Jakarta atau mengakses ribuan buku digital. Ini adalah lompatan besar dalam menutup celah ketimpangan kualitas pendidikan antara kota dan desa.</p>
+
+      <h3>Keamanan Digital</h3>
+      <p>Meski akses dibuka lebar, pemerintah tetap menerapkan sistem filtrasi konten untuk memastikan siswa hanya mendapatkan informasi yang edukatif dan positif, serta melatih mereka menghadapi era disinformasi.</p>
     `
   }
 ];

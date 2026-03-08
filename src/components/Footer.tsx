@@ -4,7 +4,6 @@ import {
   Twitter, 
   Youtube, 
   Facebook, 
-  MoveRight 
 } from "lucide-react";
 
 export default function Footer() {

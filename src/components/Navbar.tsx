@@ -1,8 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo, useMemo } from "react";
 import { Sun, Moon, Menu, X, ChevronDown, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import useDarkMode from "../hooks/useDarkMode";
 import SearchOverlay from "./SearchOverlay";
+
+// --- OPTIMASI: MEMOIZED COMPONENTS ---
+// Mencegah re-render daftar kategori yang tidak perlu saat scroll
+const CategoryLinks = memo(({ categories, closeMenu }: { categories: any[], closeMenu: () => void }) => (
+  <>
+    {categories.map((cat) => (
+      <Link
+        key={cat.name}
+        to={cat.href}
+        onClick={closeMenu}
+        className="block px-4 py-2.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
+      >
+        {cat.name}
+      </Link>
+    ))}
+  </>
+));
 
 export default function Navbar() {
   const { dark, toggle } = useDarkMode();
@@ -11,22 +28,44 @@ export default function Navbar() {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  // --- OPTIMASI: THROTTLED SCROLL ---
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- OPTIMASI: BODY LOCK ---
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : 'unset';
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   }, [open]);
 
-  const categories = [
+  // --- DATA ---
+  const categories = useMemo(() => [
     { name: "Movies", href: "/category/movies" },
     { name: "Games", href: "/category/gaming" },
     { name: "Music", href: "/category/music" },
     { name: "Tech", href: "/category/tech" },
-  ];
+  ], []);
+
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+    setCategoryOpen(false);
+  }, []);
 
   return (
     <>
@@ -38,12 +77,11 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Grid Container untuk Desktop agar Center Sempurna */}
           <div className="grid grid-cols-2 md:grid-cols-3 items-center relative z-[110]">
             
             {/* --- 1. LEFT: LOGO --- */}
             <div className="flex justify-start">
-              <Link to="/" className="flex items-center gap-3 group" onClick={() => setOpen(false)}>
+              <Link to="/" className="flex items-center gap-3 group" onClick={closeMenu}>
                 <div className="relative overflow-hidden w-10 h-10 bg-zinc-900 dark:bg-white rounded-xl flex items-center justify-center transition-transform duration-500 group-hover:rotate-[10deg]">
                   <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <span className="relative z-10 text-white dark:text-zinc-900 group-hover:text-white font-black text-xl transition-colors">T</span>
@@ -55,29 +93,20 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* --- 2. CENTER: MAIN NAVIGATION (Desktop Only) --- */}
+            {/* --- 2. CENTER: NAVIGATION (Desktop) --- */}
             <div className="hidden md:flex justify-center">
               <div className="flex items-center gap-1 p-1 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl backdrop-blur-md">
                 <Link to="/" className="px-4 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800">
                   Home
                 </Link>
 
-                {/* DROPDOWN CATEGORY */}
                 <div className="relative group">
                   <button className="flex items-center gap-1 px-4 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-all rounded-xl group-hover:bg-white dark:group-hover:bg-zinc-800">
                     Topics <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
                   </button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-48 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out">
                     <div className="p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden backdrop-blur-xl">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat.name}
-                          to={cat.href}
-                          className="block px-4 py-2.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
+                      <CategoryLinks categories={categories} closeMenu={closeMenu} />
                     </div>
                   </div>
                 </div>
@@ -92,8 +121,8 @@ export default function Navbar() {
             </div>
 
             {/* --- 3. RIGHT: UTILITIES --- */}
-            <div className="flex justify-end items-center gap-2">
-              {/* Search (Desktop) */}
+            <div className="flex justify-end items-center gap-3">
+              {/* Desktop Icons */}
               <button 
                 onClick={() => setIsSearchOpen(true)}
                 className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-zinc-600 dark:text-zinc-400 active:scale-90"
@@ -101,7 +130,6 @@ export default function Navbar() {
                 <Search size={18} />
               </button>
 
-              {/* Theme Toggle (Desktop) */}
               <button 
                 onClick={toggle} 
                 className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all active:scale-90"
@@ -109,8 +137,8 @@ export default function Navbar() {
                 {dark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-zinc-600" />}
               </button>
 
-              {/* Mobile Controls */}
-              <div className="flex md:hidden items-center gap-2">
+              {/* Mobile Icons - Ditambah gap-3 untuk jarak antar button */}
+              <div className="flex md:hidden items-center gap-3">
                 <button 
                   onClick={() => setIsSearchOpen(true)}
                   className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white active:scale-90 transition-transform"
@@ -125,7 +153,6 @@ export default function Navbar() {
                 </button>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -135,7 +162,7 @@ export default function Navbar() {
         }`}>
           <div className="flex flex-col h-full px-8 pt-32 pb-12 overflow-y-auto">
             <div className="space-y-8">
-              <Link to="/" onClick={() => setOpen(false)} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">Home.</Link>
+              <Link to="/" onClick={closeMenu} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">Home.</Link>
               
               <div className="space-y-4">
                 <button 
@@ -148,33 +175,25 @@ export default function Navbar() {
                 
                 <div className={`grid transition-all duration-500 ease-in-out ${categoryOpen ? "grid-rows-[1fr] opacity-100 mt-6" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden flex flex-col gap-6 pl-4 border-l-4 border-pink-500/20">
-                    {categories.map((cat) => (
-                      <Link 
-                        key={cat.name} 
-                        to={cat.href} 
-                        onClick={() => setOpen(false)}
-                        className="text-3xl font-black text-zinc-400 active:text-pink-500 transition-colors uppercase italic"
-                      >
-                        {cat.name}
-                      </Link>
-                    ))}
+                    <CategoryLinks categories={categories} closeMenu={closeMenu} />
                   </div>
                 </div>
               </div>
 
-              <Link to="/about" onClick={() => setOpen(false)} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">About.</Link>
-              <Link to="/contact" onClick={() => setOpen(false)} className="text-5xl font-black text-pink-500 block tracking-tighter uppercase italic">Contact.</Link>
+              <Link to="/about" onClick={closeMenu} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">About.</Link>
+              <Link to="/contact" onClick={closeMenu} className="text-5xl font-black text-pink-500 block tracking-tighter uppercase italic">Contact.</Link>
             </div>
             
-            <div className="mt-auto">
+            {/* Appearance Section - Dioptimasi dengan margin-top lebih besar (mt-12) */}
+            <div className="mt-12 mb-8">
                <div className="flex items-center justify-between p-5 rounded-3xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                  <div className="flex flex-col">
-                   <span className="text-[10px] font-black text-zinc-400 uppercase">Appearance</span>
+                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Appearance</span>
                    <span className="font-black text-sm uppercase dark:text-white">{dark ? 'Dark Night' : 'Light Day'}</span>
                  </div>
                  <button 
                    onClick={toggle} 
-                   className="w-12 h-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center active:scale-90 transition-transform"
+                   className="w-12 h-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center active:scale-90 transition-transform shadow-lg shadow-pink-500/20"
                  >
                    {dark ? <Sun size={20} /> : <Moon size={20} />}
                  </button>

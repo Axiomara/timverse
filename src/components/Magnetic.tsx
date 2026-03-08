@@ -6,7 +6,7 @@ interface MagneticProps {
 }
 
 export default function Magnetic({ children }: MagneticProps) {
-  // Menggunakan HTMLDivElement karena pembungkusnya adalah motion.div
+
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -16,7 +16,6 @@ export default function Magnetic({ children }: MagneticProps) {
     const { clientX, clientY } = e;
     const { height, width, left, top } = ref.current.getBoundingClientRect();
     
-    // Menghitung titik tengah elemen (pusat magnet)
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
     
