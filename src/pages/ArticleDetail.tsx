@@ -3,14 +3,12 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async"; // Import Helmet untuk SEO
 
-// Components
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AudioNewsPlayer from "../components/AudioNewsPlayer";
 import GiscusComments from "../components/GiscusComments.tsx";
 import NotFound from "./NotFound";
 
-// Data
 import { BLOG_POSTS } from "../data/posts";
 import { TIMIKA_PULSE_POSTS } from '../data/tim_posts';
 

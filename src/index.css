@@ -18,3 +18,34 @@ html.lenis {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
+
+/* Optimasi Performa Scroll */
+html {
+  scroll-behavior: smooth; /* Fallback untuk browser tanpa JS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+}
+
+/* Mempercepat rendering elemen berat saat scroll */
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl {
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden;
+}
+
+/* Optimasi kontainer utama */
+main, section {
+  content-visibility: auto; /* Browser hanya merender apa yang ada di viewport */
+  contain-intrinsic-size: 0 500px; /* Estimasi ukuran untuk membantu browser */
+}
+
+/* Fix untuk stuttering pada animasi framer-motion */
+.framer-motion-container {
+  will-change: transform, opacity;
+}

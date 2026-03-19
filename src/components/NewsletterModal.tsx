@@ -12,9 +12,9 @@ export default function NewsletterModal({ isOpen, onClose }: { isOpen: boolean; 
 
     setStatus("loading");
     
-    // Simulasi pengiriman data ke API
+    // pengiriman data ke API
     setTimeout(() => {
-      console.log("Newsletter terdaftar untuk:", email);
+      console.log("terdaftar untuk:", email);
       setStatus("success");
       
       // Tutup otomatis setelah sukses

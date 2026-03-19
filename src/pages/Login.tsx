@@ -15,7 +15,6 @@ export default function Login() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#fafafa] dark:bg-[#050505] px-4 sm:px-6 py-10 sm:py-24 overflow-hidden relative">
       
-      {/* --- BACKGROUND AMBIENCE --- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-pink-500/10 dark:bg-pink-500/5 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 dark:bg-purple-600/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />

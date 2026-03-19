@@ -13,7 +13,7 @@ import { TIMIKA_PULSE_POSTS } from '../data/tim_posts';
 import { 
   ArrowRight, ArrowLeft, Sparkles, MapPin, 
   TrendingUp, Zap, Clock, ChevronRight,
-  Trophy, Activity, Medal
+  Trophy, Activity, Medal, Calendar
 } from "lucide-react";
 
 export default function Home() {
@@ -42,7 +42,7 @@ export default function Home() {
 
       {/* --- SECTION 1: HERO --- */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24 mb-12 md:mb-20">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0" style={{ transform: 'translateZ(0)', willChange: 'transform' }}>
           <img src={heroPost.image} className="w-full h-full object-cover opacity-30 md:opacity-50 animate-in fade-in duration-1000" alt="Hero" />
           <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/40 to-white dark:from-zinc-950/95 dark:via-zinc-950/40 dark:to-zinc-950 z-10" />
         </div>
@@ -252,34 +252,60 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- SECTION 6: LATEST STORIES --- */}
-        <section className="max-w-7xl mx-auto">
-          <div className="mb-12 border-b border-zinc-100 dark:border-zinc-900 pb-8 flex flex-row items-end justify-between gap-4">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none">Latest Stories</h2>
-            <Link to="/archive" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors">
-              Archive <ChevronRight size={16} />
-            </Link>
+      {/* --- SECTION 6: LATEST STORIES --- */}
+<section className="max-w-7xl mx-auto">
+  <div className="mb-12 border-b border-zinc-100 dark:border-zinc-900 pb-8 flex flex-row items-end justify-between gap-4">
+    <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none">Latest Stories</h2>
+    <Link to="/archive" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors">
+      Archive <ChevronRight size={16} />
+    </Link>
+  </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
+    {latestPosts.map((item) => (
+      <Link to={`/article/${item.slug}`} key={item.slug} className="group block space-y-6">
+        {/* Image Container */}
+        <div className="relative aspect-[16/10] rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/50 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-pink-500/10">
+          <img 
+            src={item.image} 
+            className="w-full h-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-110" 
+            alt={item.title} 
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        </div>
+
+        {/* Info Container */}
+        <div className="space-y-4 px-1">
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
+            <span className="text-pink-500 px-2 py-1 bg-pink-500/5 rounded-md">{item.category}</span>
+            {/* PENGGANTI MIN READ: TANGGAL UPLOAD */}
+            <span className="text-zinc-400 opacity-60 flex items-center gap-1.5">
+              <Calendar size={12} className="text-zinc-300 dark:text-zinc-700" />
+              {item.date}
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
-            {latestPosts.map((item) => (
-              <Link to={`/article/${item.slug}`} key={item.slug} className="group block space-y-6">
-                <div className="relative aspect-[16/10] rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                  <img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={item.title} />
-                </div>
-                <div className="space-y-3 px-1">
-                  <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-pink-500">{item.category}</span>
-                    <span className="text-zinc-400 opacity-60 italic">{item.readTime} Read</span>
-                  </div>
-                  <h3 className="text-2xl font-black leading-tight uppercase italic group-hover:text-pink-500 transition-colors line-clamp-2 tracking-tight">
-                    {item.title} {item.titleAccent}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+          <div className="space-y-3">
+            <h3 className="text-2xl font-black leading-tight uppercase italic group-hover:text-pink-500 transition-colors line-clamp-2 tracking-tight">
+              {item.title} {item.titleAccent}
+            </h3>
+            
+            {/* KETERANGAN BERITA (Excerpt) */}
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed line-clamp-3 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
+              {item.excerpt}
+            </p>
           </div>
-        </section>
+
+          {/* Micro Action */}
+          <div className="pt-2 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-zinc-300 dark:text-zinc-700 group-hover:text-pink-500 transition-colors">
+            Read Full Story <ArrowRight size={12} className="group-hover:translate-x-2 transition-transform" />
+          </div>
+        </div>
+      </Link>
+    ))}
+  </div>
+</section>
 
       </main>
 

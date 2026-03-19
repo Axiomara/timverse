@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback, memo, useMemo } from "react";
-import { Sun, Moon, Menu, X, ChevronDown, Search } from "lucide-react";
+import { Sun, Moon, Menu, X, ChevronDown, Search, Radio } from "lucide-react";
 import { Link } from "react-router-dom";
 import useDarkMode from "../hooks/useDarkMode";
 import SearchOverlay from "./SearchOverlay";
 
 // --- OPTIMASI: MEMOIZED COMPONENTS ---
-// Mencegah re-render daftar kategori yang tidak perlu saat scroll
 const CategoryLinks = memo(({ categories, closeMenu }: { categories: any[], closeMenu: () => void }) => (
   <>
     {categories.map((cat) => (
@@ -13,9 +12,10 @@ const CategoryLinks = memo(({ categories, closeMenu }: { categories: any[], clos
         key={cat.name}
         to={cat.href}
         onClick={closeMenu}
-        className="block px-4 py-2.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl transition-colors"
+        className="group flex items-center justify-between px-4 py-3 text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-pink-50/50 dark:hover:bg-pink-500/5 rounded-xl transition-all"
       >
         {cat.name}
+        <div className="w-1.5 h-1.5 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
       </Link>
     ))}
   </>
@@ -40,21 +40,16 @@ export default function Navbar() {
         ticking = true;
       }
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // --- OPTIMASI: BODY LOCK ---
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = open ? 'hidden' : 'unset';
   }, [open]);
 
-  // --- DATA ---
+  // --- DATA (Ditambahkan Timika Pulse) ---
   const categories = useMemo(() => [
     { name: "Movies", href: "/category/movies" },
     { name: "Games", href: "/category/gaming" },
@@ -70,6 +65,7 @@ export default function Navbar() {
   return (
     <>
       <nav 
+        style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
         className={`fixed top-0 z-[100] w-full transition-all duration-500 ${
           scrolled || open
             ? "py-3 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-sm" 
@@ -100,6 +96,12 @@ export default function Navbar() {
                   Home
                 </Link>
 
+                {/* Timika Pulse Option */}
+                <Link to="/timika/news" className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-pink-600 dark:text-pink-400 hover:bg-white dark:hover:bg-zinc-800 rounded-xl transition-all border border-transparent hover:border-pink-500/20">
+                  <Radio size={14} className="animate-pulse" />
+                  Timika
+                </Link>
+
                 <div className="relative group">
                   <button className="flex items-center gap-1 px-4 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-all rounded-xl group-hover:bg-white dark:group-hover:bg-zinc-800">
                     Topics <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
@@ -114,15 +116,11 @@ export default function Navbar() {
                 <Link to="/about" className="px-4 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800">
                   About
                 </Link>
-                <Link to="/contact" className="px-4 py-2 text-sm font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800">
-                  Contact
-                </Link>
               </div>
             </div>
 
             {/* --- 3. RIGHT: UTILITIES --- */}
             <div className="flex justify-end items-center gap-3">
-              {/* Desktop Icons */}
               <button 
                 onClick={() => setIsSearchOpen(true)}
                 className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-zinc-600 dark:text-zinc-400 active:scale-90"
@@ -137,7 +135,7 @@ export default function Navbar() {
                 {dark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-zinc-600" />}
               </button>
 
-              {/* Mobile Icons - Ditambah gap-3 untuk jarak antar button */}
+              {/* Mobile Icons */}
               <div className="flex md:hidden items-center gap-3">
                 <button 
                   onClick={() => setIsSearchOpen(true)}
@@ -164,6 +162,11 @@ export default function Navbar() {
             <div className="space-y-8">
               <Link to="/" onClick={closeMenu} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">Home.</Link>
               
+              {/* Timika Mobile Option */}
+              <Link to="/timika/news" onClick={closeMenu} className="flex items-center gap-4 text-5xl font-black text-pink-500 block tracking-tighter uppercase italic">
+                Timika. <Radio size={32} />
+              </Link>
+
               <div className="space-y-4">
                 <button 
                   onClick={() => setCategoryOpen(!categoryOpen)}
@@ -174,17 +177,17 @@ export default function Navbar() {
                 </button>
                 
                 <div className={`grid transition-all duration-500 ease-in-out ${categoryOpen ? "grid-rows-[1fr] opacity-100 mt-6" : "grid-rows-[0fr] opacity-0"}`}>
-                  <div className="overflow-hidden flex flex-col gap-6 pl-4 border-l-4 border-pink-500/20">
+                  <div className="overflow-hidden flex flex-col gap-4 pl-4 border-l-4 border-pink-500/20">
                     <CategoryLinks categories={categories} closeMenu={closeMenu} />
                   </div>
                 </div>
               </div>
 
               <Link to="/about" onClick={closeMenu} className="text-5xl font-black text-zinc-900 dark:text-white block tracking-tighter uppercase">About.</Link>
-              <Link to="/contact" onClick={closeMenu} className="text-5xl font-black text-pink-500 block tracking-tighter uppercase italic">Contact.</Link>
+              <Link to="/contact" onClick={closeMenu} className="text-5xl font-black text-zinc-400 dark:text-zinc-600 block tracking-tighter uppercase italic">Contact.</Link>
             </div>
             
-            {/* Appearance Section - Dioptimasi dengan margin-top lebih besar (mt-12) */}
+            {/* Appearance Section */}
             <div className="mt-12 mb-8">
                <div className="flex items-center justify-between p-5 rounded-3xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                  <div className="flex flex-col">

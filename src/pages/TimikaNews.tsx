@@ -10,7 +10,6 @@ import {
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-// Import Data Dinamis
 import { TIMIKA_PULSE_POSTS } from "../data/tim_posts";
 
 // --- WIDGETS (Memoized untuk Performa) ---
