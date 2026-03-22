@@ -82,16 +82,17 @@ export default function TimikaNews() {
       : TIMIKA_PULSE_POSTS.filter(post => post.category === activeCategory);
   }, [activeCategory]);
 
-  const featuredPosts = useMemo(() => filteredPosts.slice(0, 2), [filteredPosts]);
-  const latestPosts = useMemo(() => filteredPosts.slice(2), [filteredPosts]);
-
+  const heroPost = useMemo(() => filteredPosts.length > 0 ? filteredPosts[0] : null, [filteredPosts]);
+  const featuredPosts = useMemo(() => filteredPosts.slice(1, 3), [filteredPosts]);
+  const gridPosts = useMemo(() => filteredPosts.slice(3, 6), [filteredPosts]);
+  const listPosts = useMemo(() => filteredPosts.slice(6), [filteredPosts]);
   useEffect(() => {
     const timer = setTimeout(() => setWeather(prev => ({ ...prev, loading: false })), 1000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700">
       <motion.div className="fixed top-0 left-0 right-0 h-[3px] bg-pink-500 origin-left z-[200]" style={{ scaleX }} />
       <Navbar />
 
@@ -160,17 +161,38 @@ export default function TimikaNews() {
               >
                 {filteredPosts.length > 0 ? (
                   <div className="space-y-24">
-                    {/* Editor's Choice Section */}
+                    
+                    {/* --- 1. HERO HIGHLIGHT --- */}
+                    {heroPost && (
+                      <section className="relative rounded-[3rem] overflow-hidden aspect-[4/5] md:aspect-[21/9] group shadow-2xl">
+                        <img src={heroPost.image} alt={heroPost.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 space-y-4">
+                          <div className="flex items-center gap-3">
+                            <span className="px-4 py-1.5 bg-pink-500 text-white text-[10px] font-black uppercase rounded-full tracking-widest shadow-xl shadow-pink-500/20">Sorotan Utama</span>
+                            <span className="text-[10px] text-zinc-300 font-bold uppercase tracking-widest">{heroPost.category}</span>
+                          </div>
+                          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight line-clamp-3">
+                            <Link to={`/article/${heroPost.slug}`} className="hover:text-pink-400 transition-colors">
+                              {heroPost.title} {heroPost.titleAccent}
+                            </Link>
+                          </h2>
+                          <p className="text-sm md:text-base text-zinc-300 line-clamp-2 max-w-2xl font-medium">{heroPost.excerpt}</p>
+                        </div>
+                      </section>
+                    )}
+
+                    {/* --- 2. EDITOR'S CHOICE --- */}
                     {featuredPosts.length > 0 && (
                       <section className="space-y-12">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-orange-500/10 rounded-lg"><Flame size={18} className="text-orange-500" /></div>
                           <h2 className="text-xs font-black uppercase tracking-[0.3em]">
-                            {activeCategory === "All" ? "Editor's Choice" : `Top in ${activeCategory}`}
+                            {activeCategory === "All" ? "Pilihan Redaksi" : `Top in ${activeCategory}`}
                           </h2>
                         </div>
 
-                        <div className="space-y-20">
+                        <div className="space-y-16">
                           {featuredPosts.map((post) => (
                             <motion.article 
                               initial={{ opacity: 0, y: 30 }}
@@ -207,28 +229,27 @@ export default function TimikaNews() {
                       </section>
                     )}
 
-                    {/* Fresh Updates Section */}
-                    {latestPosts.length > 0 && (
+                    {/* --- 3. KILAS MIMIKA (GRID) --- */}
+                    {gridPosts.length > 0 && (
                       <section className="space-y-12">
                         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-6">
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-pink-500/10 rounded-lg"><Zap size={18} className="text-pink-500" /></div>
-                            <h2 className="text-xs font-black uppercase tracking-[0.3em]">Latest Updates</h2>
+                            <h2 className="text-xs font-black uppercase tracking-[0.3em]">Kilas Mimika</h2>
                           </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                          {latestPosts.map((post) => (
-                            <Link to={`/article/${post.slug}`} key={post.slug} className="group space-y-6">
-                              <div className="aspect-[16/10] overflow-hidden rounded-[2rem] border border-transparent dark:border-zinc-800/50 shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                          {gridPosts.map((post) => (
+                            <Link to={`/article/${post.slug}`} key={post.slug} className="group space-y-6 flex flex-col h-full">
+                              <div className="aspect-[4/3] overflow-hidden rounded-[2rem] border border-transparent dark:border-zinc-800/50 shadow-sm relative">
                                 <img src={post.image} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
+                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
                               </div>
-                              <div className="space-y-3">
+                              <div className="space-y-3 flex-grow">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{post.date}</span>
-                                  <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-                                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{post.category}</span>
+                                  <span className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{post.category}</span>
                                 </div>
-                                <h4 className="text-xl font-black leading-snug group-hover:text-pink-500 transition-colors uppercase tracking-tight">
+                                <h4 className="text-xl font-black leading-snug group-hover:text-pink-500 transition-colors uppercase tracking-tight line-clamp-3">
                                   {post.title} {post.titleAccent}
                                 </h4>
                               </div>
@@ -237,6 +258,33 @@ export default function TimikaNews() {
                         </div>
                       </section>
                     )}
+
+                    {/* --- 4. TERBARU POPULER (LIST) --- */}
+                    {listPosts.length > 0 && (
+                      <section className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-800">
+                         <div className="flex items-center gap-3 mb-8">
+                            <div className="h-2 w-2 rounded-full bg-pink-500 animate-pulse" />
+                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Terbaru Mingguan</h2>
+                         </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                            {listPosts.map((post) => (
+                              <Link to={`/article/${post.slug}`} key={post.slug} className="group flex items-center gap-6 p-4 -mx-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                                <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-900 shadow-sm">
+                                  <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                  <span className="text-[9px] font-black text-pink-500 uppercase tracking-widest">{post.category}</span>
+                                  <h4 className="text-lg font-black leading-tight uppercase group-hover:text-pink-500 transition-colors line-clamp-2">
+                                     {post.title} {post.titleAccent}
+                                  </h4>
+                                  <span className="text-[10px] text-zinc-400 font-bold uppercase">{post.date}</span>
+                                </div>
+                              </Link>
+                            ))}
+                         </div>
+                      </section>
+                    )}
+
                   </div>
                 ) : (
                   /* --- EMPTY STATE --- */

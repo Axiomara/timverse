@@ -112,8 +112,75 @@ export const TIMIKA_PULSE_POSTS: Post[] = [
       <h3>Akses Global untuk Anak Papua</h3>
       <p>Kini, anak-anak di distrik terjauh bisa melakukan video call dengan mentor di Jakarta atau mengakses ribuan buku digital. Ini adalah lompatan besar dalam menutup celah ketimpangan kualitas pendidikan antara kota dan desa.</p>
 
-      <h3>Keamanan Digital</h3>
       <p>Meski akses dibuka lebar, pemerintah tetap menerapkan sistem filtrasi konten untuk memastikan siswa hanya mendapatkan informasi yang edukatif dan positif, serta melatih mereka menghadapi era disinformasi.</p>
+    `
+  },
+  {
+    slug: "revitalisasi-pasar-sentral-timika",
+    category: "Economy",
+    title: "Wajah Baru Pasar Sentral:",
+    titleAccent: "Modern Namun Tetap Tradisional",
+    author: "Siti Rahma",
+    date: "Feb 08, 2026",
+    readTime: "5 Min",
+    image: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&q=80",
+    tags: ["Ekonomi", "Pasar Sentral", "Timika", "UMKM", "Pembangunan"],
+    excerpt: "Renovasi tahap akhir Pasar Sentral Timika menjanjikan fasilitas yang lebih higienis dengan sistem zonasi pedagang yang tertata rapi.",
+    content: `
+      <p>Pasar Sentral Timika kini tak lagi kumuh. Revitalisasi besar-besaran yang memakan waktu satu tahun akhirnya rampung. <strong>Wajah baru pasar</strong> ini menawarkan los-los berkeramik, sistem sanitasi yang lebih baik, dan pencahayaan alami yang optimal.</p>
+      <h3>Zonasi Terpadu</h3>
+      <p>Pemerintah membagi area berdasarkan jenis dagangan: zona basah untuk ikan dan daging, zona sayur, serta zona pakaian. Penataan ini dipercaya akan meningkatkan omset pedagang karena pembeli lebih nyaman berbelanja.</p>
+    `
+  },
+  {
+    slug: "festival-tarian-seka-kamoro",
+    category: "Culture",
+    title: "Festival Seka 2026:",
+    titleAccent: "Merayakan Identitas Kamoro",
+    author: "Yohanes Tapi",
+    date: "Feb 05, 2026",
+    readTime: "6 Min",
+    image: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&q=80",
+    tags: ["Budaya", "Tarian Seka", "Kamoro", "Festival", "Seni"],
+    excerpt: "Ribuan penari dari berbagai kampung di pesisir Mimika berkumpul untuk menampilkan tarian Seka massal, mencatatkan rekor MURI terbaru.",
+    content: `
+      <p>Suara tifa bertalu-talu dari Lapangan Ex-Pasar Lama. Festival Budaya Kamoro tahun ini mengusung tema <strong>"Seka Massal"</strong>, sebuah tarian pergaulan yang melambangkan persatuan dan kegembiraan masyarakat pesisir.</p>
+      <h3>Pewarisan kepada Generasi Muda</h3>
+      <p>Yang menarik dari festival ini adalah dominasi penari muda. Para tetua adat sengaja menjadikan momen ini sebagai ajang pewarisan (transfer of knowledge) budaya lisan dan gerak agar identitas Kamoro tidak tergerus modernisasi.</p>
+    `
+  },
+  {
+    slug: "pembangunan-jalan-trans-papua-rute-nabire-timika",
+    category: "Infrastructure",
+    title: "Trans Papua Ruas Timika-Nabire:",
+    titleAccent: "Menembus Isolasi Geografis",
+    author: "Hendra Wijaya",
+    date: "Feb 02, 2026",
+    readTime: "8 Min",
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80",
+    tags: ["Infrastruktur", "Trans Papua", "Mimika", "Nabire", "Konektivitas"],
+    excerpt: "Pembukaan akses darat yang menghubungkan Mimika dan Nabire ditargetkan rampung pada akhir tahun depan, memangkas biaya logistik hingga 40%.",
+    content: `
+      <p>Belantara Papua perlahan terbuka. Pembangunan ruas jalan <strong>Trans Papua segmen Timika-Nabire</strong> terus dikebut. Jalan sepanjang ratusan kilometer ini akan menjadi urat nadi ekonomi baru yang menghubungkan wilayah selatan dan utara Papua Tengah.</p>
+      <h3>Tantangan Geodesi</h3>
+      <p>Para insinyur harus menaklukkan kontur pegunungan yang curam dan aliran sungai yang deras. Jembatan-jembatan gantung berteknologi tinggi didatangkan khusus untuk mengatasi rintangan alam tanpa merusak hutan lindung di sekitarnya.</p>
+    `
+  },
+  {
+    slug: "layanan-kesehatan-rsud-mimika",
+    category: "Health",
+    title: "Tingkatkan Kapasitas:",
+    titleAccent: "RSUD Mimika Siap Layani Jantung & Kanker",
+    author: "Dr. Amanda",
+    date: "Jan 28, 2026",
+    readTime: "4 Min",
+    image: "https://images.unsplash.com/photo-1538108149393-ceb66fa1e528?auto=format&fit=crop&q=80",
+    tags: ["Kesehatan", "RSUD Mimika", "Fasilitas Medis", "Pelayanan"],
+    excerpt: "Warga Timika tak perlu lagi rujuk ke luar Papua. Gedung baru RSUD Mimika kini dilengkapi fasilitas penanganan kardiovaskular dan onkologi.",
+    content: `
+      <p>Kemandirian medis terus didorong oleh Pemerintah Kabupaten Mimika. Peresmian <strong>Gedung Pusat Spesialis terpadu di RSUD Mimika</strong> menjadi tonggak sejarah baru dalam pelayanan kesehatan di wilayah ini.</p>
+      <h3>Dokter Spesialis Terbaik</h3>
+      <p>Tidak hanya alat canggih (seperti MRI 3 Tesla dan lab Kateterisasi Jantung), RSUD juga telah mengontrak dokter-dokter sub-spesialis dari berbagai rumah sakit rujukan nasional untuk bertugas secara rotasi di Timika.</p>
     `
   }
 ];

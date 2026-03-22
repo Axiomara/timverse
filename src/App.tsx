@@ -8,9 +8,11 @@ import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import Login from "./pages/Login";
 import About from "./pages/About"; 
+import Topics from "./pages/Topics";
 import Timika from "./pages/Timika"; 
 import TimikaNews from "./pages/TimikaNews"; 
-import TerbaruPage from "./pages/TerbaruPage"; // <-- Import Halaman Lihat Semua Terbaru
+import TerbaruPage from "./pages/TerbaruPage";
+import Contribute from "./pages/Contribute";
 
 // --- IMPORT FRAMER MOTION ---
 import { AnimatePresence } from "framer-motion";
@@ -38,7 +40,7 @@ function App() {
 
   return (
     <SmoothScroll>
-      {/* Komponen Global */}
+      {/* Helper untuk scroll reset */}
       <ScrollToTop />
 
       {/* AnimatePresence untuk Transisi Antar Halaman */}
@@ -61,6 +63,26 @@ function App() {
             element={
               <PageTransitionWrapper>
                 <About />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* TOPICS PAGE */}
+          <Route 
+            path="/topics" 
+            element={
+              <PageTransitionWrapper>
+                <Topics />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* CONTRIBUTE / KIRIM ARTIKEL PAGE */}
+          <Route 
+            path="/contribute" 
+            element={
+              <PageTransitionWrapper>
+                <Contribute />
               </PageTransitionWrapper>
             } 
           />

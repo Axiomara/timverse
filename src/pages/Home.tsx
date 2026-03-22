@@ -140,7 +140,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-14">
-            {TIMIKA_PULSE_POSTS.map((trend: Post) => (
+            {TIMIKA_PULSE_POSTS.slice(0, 3).map((trend: Post) => (
               <Link to={`/article/${trend.slug}`} key={trend.slug} className="group cursor-pointer flex flex-col h-full">
                 <article className="flex flex-col h-full">
                   <div className="relative aspect-[16/10] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-md">
