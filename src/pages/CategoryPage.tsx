@@ -4,9 +4,9 @@ import { BLOG_POSTS } from "../data/posts";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import * as Sentry from "@sentry/react";
-import { ArrowRight, Hash, Layers, Clock, TrendingUp } from "lucide-react";
+import { ArrowRight, Hash, Layers, Clock, TrendingUp, Radio, Globe } from "lucide-react";
 
-function CategoryPage() {
+export default function CategoryPage() {
   const { categoryName, tagName } = useParams();
 
   useEffect(() => {
@@ -22,32 +22,69 @@ function CategoryPage() {
     });
   }, [categoryName, tagName]);
 
-  // 2. DINAMIS: Ambil tag yang relevan dengan konten yang sedang ditampilkan saja
+  // 2. Pisahkan Postingan Timika vs Umum (Global)
+  const { timikaPosts, generalPosts } = useMemo(() => {
+    const timika: typeof BLOG_POSTS = [];
+    const general: typeof BLOG_POSTS = [];
+
+    filteredPosts.forEach(post => {
+      // Cek apakah postingan memiliki tag "timika"
+      const isTimika = post.tags.some(tag => tag.toLowerCase() === "timika");
+      if (isTimika) {
+        timika.push(post);
+      } else {
+        general.push(post);
+      }
+    });
+
+    return { timikaPosts: timika, generalPosts: general };
+  }, [filteredPosts]);
+
+  // 3. Ambil tag yang relevan
   const relevantTags = useMemo(() => {
     const allTagsFromFiltered = filteredPosts.flatMap(p => p.tags);
-    // Hilangkan duplikat dan hilangkan tag yang sedang aktif (jika sedang di halaman tag)
     const uniqueTags = Array.from(new Set(allTagsFromFiltered)).filter(
       tag => tag.toLowerCase() !== tagName?.toLowerCase()
     );
     
-    // Jika tag relevan sedikit, ambil 6 saja. Jika kosong, baru ambil dari seluruh post sebagai fallback.
     if (uniqueTags.length > 0) return uniqueTags.slice(0, 6);
     
     const fallbackTags = Array.from(new Set(BLOG_POSTS.flatMap(p => p.tags)));
     return fallbackTags.slice(0, 6);
   }, [filteredPosts, tagName]);
 
+  // 4. Pilihan Redaksi (Random fallback)
   const mustReadPosts = useMemo(() => {
     return [...BLOG_POSTS].sort(() => 0.5 - Math.random()).slice(0, 3);
   }, []);
 
   const title = categoryName ? categoryName : `#${tagName}`;
 
+  // Komponen Helper untuk merender Kartu Artikel agar kode tidak berulang
+  const renderPostCard = (post: typeof BLOG_POSTS[0]) => (
+    <article key={post.slug} className="group h-full flex flex-col">
+      <Link to={`/article/${post.slug}`} className="flex flex-col h-full">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-zinc-100 dark:bg-zinc-900 mb-8 border border-zinc-100 dark:border-zinc-800">
+          <img src={post.image} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </div>
+        <div className="flex items-center gap-3 text-[9px] font-black text-pink-500 uppercase tracking-widest mb-4">
+          <span>{post.category}</span>
+          <span className="text-zinc-400 flex items-center gap-1"><Clock size={12}/> {post.readTime}</span>
+        </div>
+        <h3 className="text-2xl font-black leading-tight uppercase mb-4 line-clamp-2">{post.title}</h3>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-6 italic">{post.excerpt}</p>
+        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pt-6 border-t border-zinc-100 dark:border-zinc-900 group-hover:text-pink-500 transition-colors mt-auto">
+          Baca Selengkapnya <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+        </div>
+      </Link>
+    </article>
+  );
+
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-500 font-sans flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-[#050505] text-zinc-900 dark:text-zinc-100 transition-colors duration-500 font-sans flex flex-col">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-24 flex-grow w-full">
+      <main className="max-w-7xl mx-auto px-6 pt-32 md:pt-40 pb-24 flex-grow w-full">
         {/* --- HEADER --- */}
         <header className="mb-12 space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-700">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-pink-500">
@@ -75,33 +112,49 @@ function CategoryPage() {
           ))}
         </section>
 
-        {/* --- GRID BERITA UTAMA --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20 mb-32">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <article key={post.slug} className="group">
-                <Link to={`/article/${post.slug}`} className="flex flex-col h-full">
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-zinc-100 dark:bg-zinc-900 mb-8 border border-zinc-100 dark:border-zinc-800">
-                    <img src={post.image} alt={post.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        {/* --- GRID BERITA YANG DIPISAH --- */}
+        {filteredPosts.length > 0 ? (
+          <div className="space-y-24 mb-32">
+            
+            {/* SECTION 1: LOKAL TIMIKA */}
+            {timikaPosts.length > 0 && (
+              <section className="animate-in fade-in slide-in-from-bottom-10 duration-1000">
+                <div className="flex items-center gap-3 mb-10 border-b border-zinc-100 dark:border-zinc-900 pb-4">
+                  <Radio className="text-pink-500 animate-pulse" size={24} />
+                  <h2 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter">
+                    Lokal Timika
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
+                  {timikaPosts.map(renderPostCard)}
+                </div>
+              </section>
+            )}
+
+            {/* SECTION 2: GLOBAL / UMUM */}
+            {generalPosts.length > 0 && (
+              <section className="animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-150 fill-mode-both">
+                {/* Tampilkan header Global hanya jika Timika juga ada (sebagai pemisah) */}
+                {timikaPosts.length > 0 && (
+                  <div className="flex items-center gap-3 mb-10 border-b border-zinc-100 dark:border-zinc-900 pb-4">
+                    <Globe className="text-zinc-400" size={24} />
+                    <h2 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-zinc-400">
+                      Global & Umum
+                    </h2>
                   </div>
-                  <div className="flex items-center gap-3 text-[9px] font-black text-pink-500 uppercase tracking-widest mb-4">
-                    <span>{post.category}</span>
-                    <span className="text-zinc-400 flex items-center gap-1"><Clock size={12}/> {post.readTime}</span>
-                  </div>
-                  <h3 className="text-2xl font-black leading-tight uppercase mb-4 line-clamp-2">{post.title}</h3>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-6 italic">{post.excerpt}</p>
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest pt-6 border-t border-zinc-100 dark:border-zinc-900 group-hover:text-pink-500 transition-colors">
-                    Baca Selengkapnya <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-                  </div>
-                </Link>
-              </article>
-            ))
-          ) : (
-            <div className="col-span-full py-20 text-center">
-              <p className="text-zinc-400 italic">Belum ada konten untuk topik ini.</p>
-            </div>
-          )}
-        </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
+                  {generalPosts.map(renderPostCard)}
+                </div>
+              </section>
+            )}
+
+          </div>
+        ) : (
+          <div className="col-span-full py-20 text-center mb-32">
+            <p className="text-zinc-400 italic">Belum ada konten untuk topik ini.</p>
+          </div>
+        )}
 
         {/* --- SECTION: PILIHAN REDAKSI --- */}
         <section className="pt-20 border-t border-zinc-200 dark:border-zinc-800">
@@ -154,9 +207,9 @@ function CategoryPage() {
   );
 }
 
-export default Sentry.withErrorBoundary(CategoryPage, {
+Sentry.withErrorBoundary(CategoryPage, {
   fallback: (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-zinc-950 p-6 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#050505] p-6 text-center">
       <h2 className="text-4xl font-black uppercase italic mb-4">Ada Masalah Teknis</h2>
       <button onClick={() => window.location.reload()} className="bg-pink-500 text-white px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest">Muat Ulang</button>
     </div>

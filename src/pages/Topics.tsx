@@ -3,6 +3,7 @@ import { Layers, Sparkles } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import TopicCard from "../components/TopicCard";
+import TrendingSection from "../components/sections/TrendingSection.tsx"; // Import komponen baru
 import { TOPICS_DATA } from "../data/topics";
 import * as Sentry from "@sentry/react";
 import { motion } from "framer-motion";
@@ -16,13 +17,11 @@ function TopicsPage() {
     <div className="min-h-screen bg-[#fafafa] dark:bg-[#050505] text-zinc-900 dark:text-zinc-100 transition-colors duration-500 font-sans flex flex-col relative overflow-x-hidden">
       
       {/* --- ORNAMEN GRADIEN RAPI & SUBTLE --- */}
-      {/* Di HP, gradient dilebarkan sedikit (w-[150%]) agar blur-nya tidak terpotong kaku */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-full max-w-[1000px] h-[300px] md:h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-500/10 via-pink-500/0 to-transparent pointer-events-none z-0" />
       
       <Navbar />
 
-      {/* Padding di HP dikurangi (px-5, pt-28) agar konten lebih lega */}
-      <main className="max-w-7xl mx-auto px-5 md:px-6 pt-28 md:pt-40 pb-20 md:pb-24 flex-grow w-full relative z-10">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 pt-28 md:pt-40 pb-20 md:pb-24 flex-grow w-full relative z-10">
         
         {/* --- HEADER SECTION --- */}
         <header className="mb-12 md:mb-24 space-y-5 md:space-y-8">
@@ -32,11 +31,10 @@ function TopicsPage() {
             className="flex items-center gap-2 text-[9px] md:text-xs font-black uppercase tracking-[0.3em] text-pink-500"
           >
             <Layers size={14} />
-            <span>Curated Directory</span>
+            <span>Kategori Utama</span>
           </motion.div>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-10">
-            {/* Tipografi Bersih & Tegas (Disesuaikan untuk HP menjadi text-[4.5rem]) */}
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -52,21 +50,19 @@ function TopicsPage() {
               transition={{ delay: 0.3 }}
               className="max-w-md space-y-4 lg:pb-2"
             >
-              {/* Teks paragraf di HP sedikit dikecilkan (text-[13px]) */}
               <p className="text-zinc-500 dark:text-zinc-400 text-[13px] md:text-base leading-relaxed italic border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 md:pl-6">
-                Jelajahi berbagai pilihan artikel dalam kategori yang sesuai dengan minat Anda. Dari pembaruan teknologi terkini hingga ulasan mendalam.
+                Jelajahi berbagai pilihan artikel melalui payung kategori utama kami. Dari pembaruan teknologi terkini hingga ulasan mendalam.
               </p>
               <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-400 pt-1 md:pt-0">
                  <Sparkles size={12} className="text-amber-500" /> 
-                 <span>{TOPICS_DATA.length} Topik Tersedia</span>
+                 <span>{TOPICS_DATA.length} Kategori Tersedia</span>
               </div>
             </motion.div>
           </div>
         </header>
 
-        {/* --- GRID TOPIK --- */}
-        {/* Di HP, jarak antar card dikurangi (gap-5) agar user tidak terlalu banyak scroll kosong */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 lg:gap-10 mb-20 md:mb-32">
+        {/* --- GRID KATEGORI UTAMA (Topics) --- */}
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 md:gap-8 lg:gap-10 mb-20 md:mb-32">
           {TOPICS_DATA.map((topic, index) => (
             <motion.div
               key={topic.id}
@@ -74,12 +70,16 @@ function TopicsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="w-full"
+              className="w-full h-full"
             >
               <TopicCard topic={topic} />
             </motion.div>
           ))}
         </div>
+
+        {/* --- SECTION: STATISTIK TRENDING & POPULER --- */}
+        {/* Kode dipanggil dengan sangat rapi dari komponen eksternal */}
+        <TrendingSection />
 
       </main>
 
