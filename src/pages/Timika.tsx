@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
-import { useRef, useState } from "react";
-import { Mountain, MapPin, Wind, Zap, ArrowDown, Globe, Compass, Star, ChevronRight } from "lucide-react";
+import { useRef } from "react";
+import { Mountain, Wind, Zap, Globe, Compass, Star, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
@@ -24,7 +24,6 @@ const staggerContainer: Variants = {
 
 export default function Timika() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,

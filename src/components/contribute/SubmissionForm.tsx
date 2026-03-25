@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, FileText, Mail, User, ArrowRight } from "lucide-react";
+import { FileText, Mail, User, ArrowRight } from "lucide-react";
 
 export default function SubmissionForm() {
   const [formData, setFormData] = useState({ name: "", subject: "", message: "" });

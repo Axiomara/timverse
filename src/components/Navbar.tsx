@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Sun, Moon, Menu, X, Search, Radio, Edit3, Home as HomeIcon, Info, Phone, LayoutGrid } from "lucide-react";
+import { Sun, Moon, Menu, X, Search, Radio, Edit3, Home as HomeIcon, Info, Phone, LayoutGrid, Flame } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import useDarkMode from "../hooks/useDarkMode";
 import SearchOverlay from "./SearchOverlay";
@@ -80,6 +80,10 @@ export default function Navbar() {
               <div className="flex items-center gap-1 p-1 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl backdrop-blur-md">
                 <Link to="/" className={`px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 ${isActive('/') ? 'text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 shadow-sm' : 'text-zinc-500'}`}>Home</Link>
                 
+                <Link to="/trending" className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 ${isActive('/trending') ? 'text-orange-500' : 'text-zinc-500'}`}>
+                  <Flame size={12} className={isActive('/trending') ? 'animate-pulse' : 'text-orange-500'} /> Trending
+                </Link>
+
                 <Link to="/timika/news" className={`flex items-center gap-2 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 ${isActive('/timika/news') ? 'text-pink-500' : 'text-zinc-500'}`}>
                   <Radio size={12} className={isActive('/timika/news') ? '' : 'animate-pulse text-pink-500'} /> Timika
                 </Link>
@@ -125,6 +129,12 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
                       <HomeIcon size={20} className="text-zinc-400 group-active:text-white" />
                       <span className="text-xl font-black uppercase tracking-tighter italic">Home</span>
+                    </div>
+                  </Link>
+                  <Link to="/trending" onClick={closeMenu} className="flex items-center justify-between p-5 rounded-[2rem] bg-orange-500 text-white shadow-lg shadow-orange-500/20 active:scale-95 transition-all">
+                    <div className="flex items-center gap-4">
+                      <Flame size={20} className="animate-pulse" />
+                      <span className="text-xl font-black uppercase tracking-tighter italic">Trending</span>
                     </div>
                   </Link>
                   <Link to="/timika/news" onClick={closeMenu} className="flex items-center justify-between p-5 rounded-[2rem] bg-pink-500 text-white shadow-lg shadow-pink-500/20 active:scale-95 transition-all">

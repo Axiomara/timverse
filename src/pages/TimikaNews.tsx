@@ -3,11 +3,11 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, Activity, ChevronRight, Zap, Flame, Calendar,
-  Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon, ArrowRight, Filter
+  Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon, Filter
 } from "lucide-react";
 
 // Components
-import Navbar from "../components/Navbar";
+import TimikaNavbar from "../components/timika/TimikaNavbar";
 import Footer from "../components/Footer";
 
 import { TIMIKA_PULSE_POSTS } from "../data/tim_posts";
@@ -92,15 +92,19 @@ export default function TimikaNews() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700">
+    <div className="min-h-screen relative bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700">
+      
+      {/* --- ORNAMEN GRADIEN RAPI & SUBTLE --- */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-full max-w-[1000px] h-[300px] md:h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-500/15 via-pink-500/0 to-transparent pointer-events-none z-0" />
+
       <motion.div className="fixed top-0 left-0 right-0 h-[3px] bg-pink-500 origin-left z-[200]" style={{ scaleX }} />
-      <Navbar />
+      <TimikaNavbar />
 
       {/* --- HERO SECTION --- */}
       <motion.header 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="pt-32 md:pt-48 px-6 max-w-7xl mx-auto"
+        className="relative z-10 pt-32 md:pt-48 px-6 max-w-7xl mx-auto"
       >
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2 text-pink-600 dark:text-pink-400 font-bold text-[10px] uppercase tracking-[0.4em]">
@@ -123,7 +127,7 @@ export default function TimikaNews() {
       </motion.header>
 
       {/* --- CATEGORY FILTER BAR --- */}
-      <nav className="max-w-7xl mx-auto px-6 py-8">
+      <nav className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-2 mr-4 text-zinc-400">
             <Filter size={14} />
@@ -145,7 +149,7 @@ export default function TimikaNews() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           
           {/* --- MAIN FEED --- */}

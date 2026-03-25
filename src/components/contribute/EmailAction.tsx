@@ -1,4 +1,4 @@
-import { Mail, Copy, ArrowRight, ExternalLink } from "lucide-react";
+import { Mail, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function EmailAction() {

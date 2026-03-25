@@ -164,7 +164,7 @@ function About() {
 }
 
 // --- ERROR FALLBACK (Lightweight) ---
-const ErrorFallback = ({ error, resetError }: { error: unknown; resetError: () => void }) => (
+const ErrorFallback = ({ resetError }: { error: unknown; resetError: () => void }) => (
   <div className="min-h-screen flex items-center justify-center bg-black p-6 text-center">
     <div className="space-y-6">
       <AlertCircle size={48} className="text-red-500 mx-auto" />

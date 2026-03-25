@@ -10,7 +10,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import TimikaNavbar from "../components/timika/TimikaNavbar";
 import Footer from "../components/Footer";
 
 const semuaBerita = [
@@ -62,10 +62,14 @@ export default function TerbaruPage() {
   }, [activeCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#050505] dark:text-zinc-100 transition-colors duration-500 selection:bg-pink-500 selection:text-white overflow-x-hidden">
-      <Navbar />
+    <div className="min-h-screen relative flex flex-col bg-[#fafafa] dark:bg-[#050505] dark:text-zinc-100 text-zinc-900 transition-colors duration-500 selection:bg-pink-500 selection:text-white overflow-x-hidden">
+      
+      {/* --- ORNAMEN GRADIEN RAPI & SUBTLE --- */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-full max-w-[1000px] h-[300px] md:h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-500/15 via-pink-500/0 to-transparent pointer-events-none z-0" />
 
-      <main className="max-w-6xl mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-24">
+      <TimikaNavbar />
+
+      <main className="relative z-10 w-full flex-grow max-w-6xl mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-24">
         
         {/* --- HEADER --- */}
         <div className="flex flex-col gap-6 mb-12 md:mb-20">

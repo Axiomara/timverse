@@ -13,6 +13,7 @@ import Timika from "./pages/Timika";
 import TimikaNews from "./pages/TimikaNews"; 
 import TerbaruPage from "./pages/TerbaruPage";
 import Contribute from "./pages/Contribute";
+import Trending from "./pages/Trending";
 
 // --- IMPORT FRAMER MOTION ---
 import { AnimatePresence } from "framer-motion";
@@ -113,6 +114,16 @@ function App() {
             element={
               <PageTransitionWrapper>
                 <TerbaruPage />
+              </PageTransitionWrapper>
+            } 
+          />
+
+          {/* TRENDING PAGE */}
+          <Route 
+            path="/trending" 
+            element={
+              <PageTransitionWrapper>
+                <Trending />
               </PageTransitionWrapper>
             } 
           />
