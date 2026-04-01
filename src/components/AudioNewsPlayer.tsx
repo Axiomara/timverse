@@ -40,12 +40,10 @@ export default function AudioNewsPlayer({ text, title }: AudioNewsProps) {
     
     const utterance = new SpeechSynthesisUtterance(remainingText);
     
-    // Cari suara Bahasa Indonesia
     const voices = synthRef.current.getVoices();
     const idVoice = voices.find(v => v.lang.includes('id-ID'));
     if (idVoice) utterance.voice = idVoice;
 
-    // Terapkan Pengaturan
     utterance.volume = volume;
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
@@ -57,7 +55,7 @@ export default function AudioNewsPlayer({ text, title }: AudioNewsProps) {
     };
 
     utterance.onend = () => {
-      if (progress > 95) { // Benar-benar selesai
+      if (progress > 95) { 
         setIsPlaying(false);
         setProgress(0);
         setLastCharIndex(0);

@@ -40,10 +40,10 @@ body {
 }
 
 /* Optimasi kontainer utama */
-main, section {
-  content-visibility: auto; /* Browser hanya merender apa yang ada di viewport */
-  contain-intrinsic-size: 0 500px; /* Estimasi ukuran untuk membantu browser */
-}
+/* main, section {
+  content-visibility: auto; Browser hanya merender apa yang ada di viewport
+  contain-intrinsic-size: 0 500px; Estimasi ukuran untuk membantu browser
+} */
 
 /* Fix untuk stuttering pada animasi framer-motion */
 .framer-motion-container {

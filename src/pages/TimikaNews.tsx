@@ -25,7 +25,7 @@ const WeatherWidget = memo(({ weather }: any) => {
   };
 
   return (
-    <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm group transition-all duration-500 hover:shadow-xl">
+    <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm group transition-all duration-500 hover:shadow-xl h-full flex flex-col justify-between">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
@@ -92,7 +92,7 @@ export default function TimikaNews() {
   }, []);
 
   return (
-    <div className="min-h-screen relative bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700">
+    <div className="min-h-screen relative bg-[#fafafa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-zinc-100 selection:bg-pink-500 selection:text-white overflow-x-clip transition-colors duration-700">
       
       {/* --- ORNAMEN GRADIEN RAPI & SUBTLE --- */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-full max-w-[1000px] h-[300px] md:h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-500/15 via-pink-500/0 to-transparent pointer-events-none z-0" />
@@ -127,9 +127,9 @@ export default function TimikaNews() {
       </motion.header>
 
       {/* --- CATEGORY FILTER BAR --- */}
-      <nav className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div className="flex flex-wrap gap-2 items-center">
-          <div className="flex items-center gap-2 mr-4 text-zinc-400">
+      <nav className="relative z-10 max-w-7xl mx-auto py-8">
+        <div className="flex flex-nowrap overflow-x-auto gap-2 items-center px-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+          <div className="flex items-center gap-2 mr-4 text-zinc-400 flex-shrink-0">
             <Filter size={14} />
             <span className="text-[9px] font-black uppercase tracking-widest">Filter:</span>
           </div>
@@ -137,7 +137,7 @@ export default function TimikaNews() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 border ${
+              className={`flex-shrink-0 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 border ${
                 activeCategory === cat 
                 ? "bg-pink-500 text-white border-pink-500 shadow-lg shadow-pink-500/20" 
                 : "bg-transparent text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:border-pink-500"
@@ -313,51 +313,59 @@ export default function TimikaNews() {
           </div>
 
           {/* --- SIDEBAR --- */}
-          <aside className="lg:col-span-4">
-            <div className="sticky top-32 space-y-8">
-              <WeatherWidget weather={weather} />
+          <aside className="lg:col-span-4 order-first lg:order-none mb-4 lg:mb-0">
+            <div className="sticky top-32 flex flex-nowrap lg:flex-col gap-6 overflow-x-auto pb-6 lg:pb-0 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] items-stretch">
+              
+              <div className="flex-none w-[85vw] sm:w-[350px] lg:w-auto snap-center">
+                <WeatherWidget weather={weather} />
+              </div>
               
               {/* Trending Widget */}
-              <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm space-y-8 group transition-all duration-500 hover:shadow-xl">
-                <div className="flex items-center justify-between border-b border-zinc-50 dark:border-zinc-800 pb-5">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-pink-500/10 rounded-lg"><TrendingUp size={14} className="text-pink-500" /></div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Trending Now</h3>
-                  </div>
-                  <Activity size={12} className="text-zinc-300 animate-pulse" />
-                </div>
-                <div className="space-y-1">
-                  {['Info Bandara Mozes', 'Karya Ukir Kamoro', 'Harga Pasar Sentral', 'Festival Budaya 2026'].map((item, i) => (
-                    <div key={i} className="group/item cursor-pointer flex items-center gap-5 p-3 -mx-3 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
-                      <span className="text-2xl font-black text-zinc-100 dark:text-zinc-800 group-hover/item:text-pink-500 transition-colors tracking-tighter">0{i + 1}</span>
-                      <p className="text-[11px] font-bold uppercase leading-tight text-zinc-700 dark:text-zinc-300 group-hover/item:translate-x-1 transition-transform truncate">{item}</p>
-                      <ChevronRight size={14} className="ml-auto opacity-0 group-hover/item:opacity-100 text-pink-500" />
+              <div className="flex-none w-[85vw] sm:w-[350px] lg:w-auto snap-center">
+                <div className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm space-y-8 group transition-all duration-500 hover:shadow-xl h-full flex flex-col">
+                  <div className="flex items-center justify-between border-b border-zinc-50 dark:border-zinc-800 pb-5">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-pink-500/10 rounded-lg"><TrendingUp size={14} className="text-pink-500" /></div>
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Trending Now</h3>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Flash News Widget */}
-              <div className="p-8 rounded-[2.5rem] bg-zinc-950 text-white overflow-hidden relative group transition-all duration-500 shadow-2xl shadow-pink-500/5">
-                <div className="relative z-10 space-y-8">
-                  <div className="flex justify-between items-center border-b border-white/10 pb-5">
-                    <div className="flex items-center gap-2 text-pink-500">
-                      <Zap size={14} fill="currentColor" />
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Flash News</h3>
-                    </div>
-                    <div className="flex h-2 w-2 rounded-full bg-pink-500 animate-ping" />
+                    <Activity size={12} className="text-zinc-300 animate-pulse" />
                   </div>
-                  <div className="space-y-6">
-                    {[{ jam: "14:20", teks: "Pawai budaya di Jalan Cenderawasih dimulai sore ini." }, { jam: "12:05", teks: "Stok sagu di Pasar Sentral dilaporkan melimpah." }].map((item, i) => (
-                      <div key={i} className="flex gap-4 group/news cursor-pointer">
-                        <span className="text-[10px] font-black opacity-30 tabular-nums">{item.jam}</span>
-                        <p className="text-[11px] font-bold leading-relaxed opacity-80 group-hover/news:opacity-100 group-hover/news:text-pink-500 transition-all">{item.teks}</p>
+                  <div className="space-y-1 flex-1">
+                    {['Info Bandara Mozes', 'Karya Ukir Kamoro', 'Harga Pasar Sentral', 'Festival Budaya 2026'].map((item, i) => (
+                      <div key={i} className="group/item cursor-pointer flex items-center gap-5 p-3 -mx-3 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-300">
+                        <span className="text-2xl font-black text-zinc-100 dark:text-zinc-800 group-hover/item:text-pink-500 transition-colors tracking-tighter">0{i + 1}</span>
+                        <p className="text-[11px] font-bold uppercase leading-tight text-zinc-700 dark:text-zinc-300 group-hover/item:translate-x-1 transition-transform truncate">{item}</p>
+                        <ChevronRight size={14} className="ml-auto opacity-0 group-hover/item:opacity-100 text-pink-500" />
                       </div>
                     ))}
                   </div>
                 </div>
-                <Globe size={180} className="absolute -right-12 -bottom-12 opacity-[0.05] animate-spin-slow pointer-events-none" />
               </div>
+
+              {/* Flash News Widget */}
+              <div className="flex-none w-[85vw] sm:w-[350px] lg:w-auto snap-center">
+                <div className="p-8 rounded-[2.5rem] bg-zinc-950 text-white overflow-hidden relative group transition-all duration-500 shadow-2xl shadow-pink-500/5 h-full flex flex-col">
+                  <div className="relative z-10 space-y-8 flex-1">
+                    <div className="flex justify-between items-center border-b border-white/10 pb-5">
+                      <div className="flex items-center gap-2 text-pink-500">
+                        <Zap size={14} fill="currentColor" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Flash News</h3>
+                      </div>
+                      <div className="flex h-2 w-2 rounded-full bg-pink-500 animate-ping" />
+                    </div>
+                    <div className="space-y-6">
+                      {[{ jam: "14:20", teks: "Pawai budaya di Jalan Cenderawasih dimulai sore ini." }, { jam: "12:05", teks: "Stok sagu di Pasar Sentral dilaporkan melimpah." }].map((item, i) => (
+                        <div key={i} className="flex gap-4 group/news cursor-pointer">
+                          <span className="text-[10px] font-black opacity-30 tabular-nums">{item.jam}</span>
+                          <p className="text-[11px] font-bold leading-relaxed opacity-80 group-hover/news:opacity-100 group-hover/news:text-pink-500 transition-all">{item.teks}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Globe size={180} className="absolute -right-12 -bottom-12 opacity-[0.05] animate-spin-slow pointer-events-none" />
+                </div>
+              </div>
+
             </div>
           </aside>
         </div>
