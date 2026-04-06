@@ -65,7 +65,7 @@ export default function TimikaNavbar() {
                 </div>
                 <div className="flex flex-col leading-none">
                   <h1 className="text-lg font-black tracking-tight dark:text-white text-zinc-900 uppercase">TIMVERSE</h1>
-                  <span className="text-[9px] font-bold text-pink-500 tracking-widest uppercase italic mt-0.5">Papua Insight</span>
+                  <span className="text-[9px] font-bold text-pink-500 tracking-widest uppercase italic mt-0.5">Wawasan Papua</span>
                 </div>
               </Link>
             </div>
@@ -75,17 +75,17 @@ export default function TimikaNavbar() {
               <div className="flex items-center gap-1 p-1 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl backdrop-blur-md">
 
                 <Link to="/timika/news" className={`flex items-center gap-2 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 ${isActive('/timika/news') ? 'text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 shadow-sm' : 'text-zinc-500'}`}>
-                  Feed
+                  Berita Utama
                 </Link>
 
                 <Link to="/timika/news/latest" className={`flex items-center gap-2 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 ${isActive('/timika/news/latest') ? 'text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 shadow-sm' : 'text-zinc-500'}`}>
-                  Latest
+                  Terbaru
                 </Link>
 
                 <div className="w-px h-4 bg-zinc-200 dark:bg-zinc-700 mx-1"></div>
 
                 <Link to="/" className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-xl hover:bg-white dark:hover:bg-zinc-800 text-zinc-500 hover:text-pink-500`}>
-                  <ArrowLeft size={12} /> Main Portal
+                  <ArrowLeft size={12} /> Portal Utama
                 </Link>
 
               </div>
@@ -117,19 +117,19 @@ export default function TimikaNavbar() {
           >
             <div className="flex-grow space-y-10">
               <div className="space-y-4">
-                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-pink-500/60 ml-1">Timika Center</p>
+                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-pink-500/60 ml-1">Pusat Timika</p>
                 <div className="grid gap-2">
                   <Link to="/timika/news" onClick={closeMenu} className="flex items-center justify-between p-5 rounded-[2rem] bg-pink-500 text-white shadow-lg shadow-pink-500/20 active:scale-95 transition-all">
                     <div className="flex items-center gap-4">
                       <Radio size={20} className="animate-pulse" />
-                      <span className="text-xl font-black uppercase tracking-tighter italic">News Feed</span>
+                      <span className="text-xl font-black uppercase tracking-tighter italic">Berita Utama</span>
                     </div>
                   </Link>
 
                   <Link to="/timika/news/latest" onClick={closeMenu} className="flex items-center justify-between p-5 rounded-[2rem] bg-zinc-50 dark:bg-white/5 group active:bg-pink-500 active:text-white transition-all">
                     <div className="flex items-center gap-4">
                       <Zap size={20} className="text-zinc-400 group-active:text-white" />
-                      <span className="text-xl font-black uppercase tracking-tighter italic">Latest Updates</span>
+                      <span className="text-xl font-black uppercase tracking-tighter italic">Kabar Terbaru</span>
                     </div>
                   </Link>
 
@@ -138,7 +138,7 @@ export default function TimikaNavbar() {
                   <Link to="/" onClick={closeMenu} className="flex items-center justify-between p-5 rounded-[2rem] bg-zinc-50 dark:bg-white/5 group active:bg-zinc-900 dark:active:bg-white active:text-white dark:active:text-zinc-900 transition-all">
                     <div className="flex items-center gap-4">
                       <HomeIcon size={20} className="text-zinc-400 group-active:text-white dark:group-active:text-zinc-900" />
-                      <span className="text-xl font-black uppercase tracking-tighter italic">Back to Main</span>
+                      <span className="text-xl font-black uppercase tracking-tighter italic">Ke Portal Utama</span>
                     </div>
                   </Link>
                 </div>
@@ -149,8 +149,8 @@ export default function TimikaNavbar() {
             <div className="mt-12 pt-6 border-t border-zinc-100 dark:border-white/5">
               <div className="flex items-center justify-between p-5 rounded-[2.5rem] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-xl">
                 <div className="flex flex-col">
-                  <span className="text-[8px] font-black uppercase tracking-[0.3em] opacity-40 text-left">Theme Mode</span>
-                  <span className="font-black text-sm uppercase italic text-left">{dark ? 'Midnight' : 'Daylight'}</span>
+                  <span className="text-[8px] font-black uppercase tracking-[0.3em] opacity-40 text-left">Mode Tema</span>
+                  <span className="font-black text-sm uppercase italic text-left">{dark ? 'Gelap' : 'Terang'}</span>
                 </div>
                 <button
                   onClick={toggle}
