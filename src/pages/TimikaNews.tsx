@@ -3,7 +3,8 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, Activity, ChevronRight, Zap, Flame, Calendar,
-  Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon, Filter
+  Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon, Filter,
+  Play
 } from "lucide-react";
 
 // Components
@@ -263,6 +264,43 @@ export default function TimikaNews() {
                       </section>
                     )}
 
+                    {/* --- 3.5 MULTIMEDIA / GALERI KILAS --- */}
+                    {filteredPosts.length > 2 && (
+                      <section className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-800">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-500/10 rounded-lg"><Play size={18} className="text-indigo-500" /></div>
+                            <h2 className="text-xs font-black uppercase tracking-[0.3em]">Kilas Multimedia</h2>
+                          </div>
+                          <button className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors">Lihat Semua</button>
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] touch-pan-x overscroll-x-contain scroll-smooth">
+                          {filteredPosts.slice(0, 4).map((post, idx) => (
+                             <div key={`video-${idx}`} className="flex-none w-[75vw] sm:w-[300px] snap-center group cursor-pointer space-y-4">
+                               <div className="aspect-[4/3] bg-zinc-200 dark:bg-zinc-800 rounded-3xl overflow-hidden relative shadow-sm">
+                                 <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={post.title} loading="lazy" />
+                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+                                 <div className="absolute inset-0 flex items-center justify-center">
+                                   <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform shadow-lg">
+                                     <Play size={20} fill="currentColor" className="text-white ml-1" />
+                                   </div>
+                                 </div>
+                                 <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/60 rounded-md backdrop-blur-sm text-[9px] font-bold text-white tracking-widest shadow-sm">
+                                   0{(idx + 2) * 2}:45
+                                 </div>
+                               </div>
+                               <div>
+                                 <span className="text-[8px] font-black text-indigo-500 uppercase tracking-widest block mb-2">{post.category}</span>
+                                 <h4 className="text-sm font-black leading-tight uppercase group-hover:text-indigo-500 transition-colors line-clamp-2">
+                                   {post.title} {post.titleAccent}
+                                 </h4>
+                               </div>
+                             </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
                     {/* --- 4. TERBARU POPULER (LIST) --- */}
                     {listPosts.length > 0 && (
                       <section className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-800">
@@ -286,6 +324,36 @@ export default function TimikaNews() {
                               </Link>
                             ))}
                          </div>
+                      </section>
+                    )}
+
+                    {/* --- 5. EKSPLORASI BERITA LAINNYA --- */}
+                    {filteredPosts.length > 4 && (
+                      <section className="space-y-6 pt-12 border-t border-zinc-100 dark:border-zinc-800">
+                        <div className="flex items-center gap-3 mb-6">
+                           <div className="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                           <h2 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Eksplorasi Berita</h2>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                           {filteredPosts.slice(4).map((post) => (
+                             <Link to={`/article/${post.slug}`} key={`explore-${post.slug}`} className="group flex flex-col gap-4 p-4 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/50 hover:shadow-xl transition-all duration-300">
+                               <div className="w-full aspect-[21/9] overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 relative">
+                                 <img src={post.image} alt={post.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                 <div className="absolute top-3 left-3 px-2 py-1 bg-black/50 backdrop-blur-md rounded-md text-[8px] font-black uppercase tracking-widest text-white">{post.category}</div>
+                               </div>
+                               <div className="flex flex-col gap-2">
+                                 <h4 className="text-sm font-black leading-tight uppercase group-hover:text-pink-500 transition-colors line-clamp-2">
+                                    {post.title} {post.titleAccent}
+                                 </h4>
+                                 <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-bold uppercase mt-1 tracking-widest">
+                                    <span>{post.date}</span>
+                                    <span>•</span>
+                                    <span>{post.readTime}</span>
+                                 </div>
+                               </div>
+                             </Link>
+                           ))}
+                        </div>
                       </section>
                     )}
 
@@ -363,6 +431,35 @@ export default function TimikaNews() {
                     </div>
                   </div>
                   <Globe size={180} className="absolute -right-12 -bottom-12 opacity-[0.05] animate-spin-slow pointer-events-none" />
+                </div>
+              </div>
+
+              {/* --- SUARA WARGA WIDGET --- */}
+              <div className="flex-none w-[85vw] sm:w-[350px] lg:w-auto snap-center">
+                <div className="p-8 rounded-[2.5rem] bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 shadow-sm space-y-6 group transition-all duration-500 hover:shadow-xl flex flex-col relative overflow-hidden h-full">
+                  <div className="absolute top-0 right-0 p-6 opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14.017 21L16.417 14.504C16.634 13.921 16.745 13.333 16.745 12.75V3H22V12.98C22 15.65 20.89 18.06 18.665 20.218L14.017 21ZM3 21L5.4 14.504C5.617 13.921 5.728 13.333 5.728 12.75V3H11V12.98C11 15.65 9.89 18.06 7.665 20.218L3 21Z" />
+                    </svg>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2 relative z-10 border-b border-indigo-100 dark:border-indigo-900/50 pb-4">
+                    <div className="p-1.5 bg-indigo-500/10 rounded-lg"><Activity size={14} className="text-indigo-500" /></div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-700 dark:text-indigo-400">Opini Warga</h3>
+                  </div>
+                  <div className="space-y-4 relative z-10 flex-1 flex flex-col justify-between">
+                    <p className="text-sm font-medium leading-relaxed italic text-zinc-700 dark:text-zinc-300">
+                      "Revitalisasi fasilitas umum dan pasar sentral membuat Timika terlihat semakin modern. Harapannya ekonomi mikro semakin kuat."
+                    </p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-indigo-200/50 dark:border-indigo-800/50">
+                      <div className="w-8 h-8 rounded-full bg-indigo-200 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0 text-[10px] font-black text-indigo-700 dark:text-indigo-300">
+                        AM
+                      </div>
+                      <div>
+                        <h4 className="text-[11px] font-bold uppercase text-zinc-900 dark:text-zinc-100">Andreas M.</h4>
+                        <span className="text-[9px] font-bold text-zinc-500">Warga Kwamki, Mimika</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
