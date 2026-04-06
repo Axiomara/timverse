@@ -1,8 +1,8 @@
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { 
-  TrendingUp, Activity, ChevronRight, Zap, Flame, Calendar,
+  TrendingUp, Activity, ChevronRight, ChevronLeft, Zap, Flame, Calendar,
   Sun, Wind, Droplets, MapPin, Clock, Globe, Cloud, Moon, Filter,
   Play
 } from "lucide-react";
@@ -67,6 +67,7 @@ export default function TimikaNews() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const [weather, setWeather] = useState({ temp: 28, condition: 'Clear', humidity: 80, wind: 5, loading: true });
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   // --- STATE FILTER ---
   const [activeCategory, setActiveCategory] = useState("All");
@@ -266,15 +267,44 @@ export default function TimikaNews() {
 
                     {/* --- 3.5 MULTIMEDIA / GALERI KILAS --- */}
                     {filteredPosts.length > 2 && (
-                      <section className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-800">
+                      <section className="space-y-6 pt-12 border-t border-zinc-100 dark:border-zinc-800 relative group/section">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-indigo-500/10 rounded-lg"><Play size={18} className="text-indigo-500" /></div>
                             <h2 className="text-xs font-black uppercase tracking-[0.3em]">Kilas Multimedia</h2>
                           </div>
-                          <button className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors">Lihat Semua</button>
+                          <div className="flex items-center gap-2">
+                            <button 
+                              onClick={() => {
+                                if (scrollContainerRef.current) scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+                              }}
+                              className="hidden lg:flex w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 items-center justify-center text-zinc-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                            >
+                              <ChevronLeft size={16} />
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if (scrollContainerRef.current) scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+                              }}
+                              className="hidden lg:flex w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 items-center justify-center text-zinc-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                            >
+                              <ChevronRight size={16} />
+                            </button>
+                            <button className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-pink-500 transition-colors ml-4">Lihat Semua</button>
+                          </div>
                         </div>
-                        <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] touch-pan-x overscroll-x-contain scroll-smooth">
+                        <div 
+                          ref={scrollContainerRef}
+                          className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] touch-pan-x overscroll-x-contain scroll-smooth"
+                          onWheel={(e) => {
+                            if (e.deltaY === 0) return;
+                            // Optionally let natural vertical scroll happen, or bind wheel to horizontal:
+                            // if (scrollContainerRef.current && e.currentTarget) {
+                            //   e.preventDefault();
+                            //   scrollContainerRef.current.scrollBy({ left: e.deltaY > 0 ? 100 : -100 });
+                            // }
+                          }}
+                        >
                           {filteredPosts.slice(0, 4).map((post, idx) => (
                              <div key={`video-${idx}`} className="flex-none w-[75vw] sm:w-[300px] snap-center group cursor-pointer space-y-4">
                                <div className="aspect-[4/3] bg-zinc-200 dark:bg-zinc-800 rounded-3xl overflow-hidden relative shadow-sm">
