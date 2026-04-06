@@ -1,5 +1,5 @@
 // src/data/topics.ts
-import { Film, Gamepad2, Music, Laptop, Trophy, Landmark, TrendingUp, HeartPulse, Plane, Utensils } from "lucide-react";
+import { Film, Laptop, Trophy, Landmark, TrendingUp, HeartPulse, Plane, Utensils, BookOpen, Leaf, Coffee, Car } from "lucide-react";
 
 export interface TopicData {
   id: string;
@@ -13,31 +13,13 @@ export interface TopicData {
 
 export const TOPICS_DATA: TopicData[] = [
   {
-    id: "movies",
-    name: "Movies",
-    slug: "movies",
+    id: "entertainment",
+    name: "Hiburan",
+    slug: "entertainment",
     icon: Film,
-    description: "Ulasan, berita, dan wawasan terdalam dari dunia perfilman dan sinema global.",
+    description: "Ulasan film, kabar dunia video games, tren musik modern, serta budaya pop sosial terkini.",
     coverImage: "https://images7.alphacoders.com/107/1079478.jpg",
-    postCount: 12
-  },
-  {
-    id: "gaming",
-    name: "Games",
-    slug: "gaming",
-    icon: Gamepad2,
-    description: "Update terbaru, rumor, dan review eksklusif industri video games.",
-    coverImage: "https://www.rockstargames.com/VI/_next/image?url=%2FVI%2F_next%2Fstatic%2Fmedia%2FJason_and_Lucia_02_With_Logos_landscape.93ab5523.jpg&w=1920&q=75",
-    postCount: 8
-  },
-  {
-    id: "music",
-    name: "Music",
-    slug: "music",
-    icon: Music,
-    description: "Eksplorasi industri musik modern, teknologi sound, hingga musisi pendatang baru.",
-    coverImage: "https://picsum.photos/seed/musicai/1200/600",
-    postCount: 5
+    postCount: 25
   },
   {
     id: "tech",
@@ -101,5 +83,41 @@ export const TOPICS_DATA: TopicData[] = [
     description: "Eksplorasi cita rasa, resep masakan, dan review restoran terbaik di kota Anda.",
     coverImage: "https://picsum.photos/seed/foody/1200/600",
     postCount: 7
+  },
+  {
+    id: "education",
+    name: "Pendidikan",
+    slug: "education",
+    icon: BookOpen,
+    description: "Informasi seputar dunia akademis, beasiswa unggulan, dan pengembangan karir generasi muda.",
+    coverImage: "https://picsum.photos/seed/eduu/1200/600",
+    postCount: 12
+  },
+  {
+    id: "environment",
+    name: "Lingkungan",
+    slug: "environment",
+    icon: Leaf,
+    description: "Terdepan menyoroti isu perubahan iklim, energi terbarukan, dan inisiatif hijau dari seluruh dunia.",
+    coverImage: "https://picsum.photos/seed/greenplanet/1200/600",
+    postCount: 16
+  },
+  {
+    id: "lifestyle",
+    name: "Gaya Hidup",
+    slug: "lifestyle",
+    icon: Coffee,
+    description: "Menjelajahi tren fashion terkini, tips keseharian memukau, hobi, hingga inpirasi desain estetik.",
+    coverImage: "https://picsum.photos/seed/lifestylehip/1200/600",
+    postCount: 21
+  },
+  {
+    id: "automotive",
+    name: "Otomotif",
+    slug: "automotive",
+    icon: Car,
+    description: "Ulasan jujur peluncuran kendaraan masa depan, industri transportasi, dan budaya roda dunia.",
+    coverImage: "https://picsum.photos/seed/carspeed/1200/600",
+    postCount: 10
   }
 ];
